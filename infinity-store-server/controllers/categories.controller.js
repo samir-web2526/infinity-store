@@ -1,6 +1,34 @@
 const { getDB } = require("../config/db");
 const { ObjectId } = require("mongodb");
 
+const createCategory = async (req, res) => {
+    try {
+        const db = getDB();
+
+        const categoriesCollection = db.collection("categories");
+
+        const category = {
+            name: req.body.name,
+            slug: req.body.slug,
+            children: req.body.children || []
+        };
+
+        const result = await categoriesCollection.insertOne(category);
+
+        res.send({
+            message: "Category created successfully",
+            insertedId: result.insertedId
+        });
+
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).send({
+            message: "Internal Server Error"
+        });
+    }
+};
+
 const getAllCategories = async (req, res) => {
 
     try {
@@ -56,7 +84,90 @@ const getSingleCategory = async (req, res) => {
     }
 };
 
+const updateCategory = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const db = getDB();
+
+        const categoriesCollection = db.collection("categories");
+
+
+        const result = await categoriesCollection.updateOne(
+            {
+                _id: new ObjectId(id)
+            },
+            {
+                $set: {
+                    ...req.body
+                }
+            }
+        );
+
+
+        if (result.matchedCount === 0) {
+            return res.status(404).send({
+                message: "Category not found"
+            });
+        }
+
+
+        res.send({
+            message: "Category updated successfully"
+        });
+
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).send({
+            message: "Internal Server Error"
+        });
+    }
+};
+
+const deleteCategory = async (req, res) => {
+    try {
+
+        const { id } = req.params;
+
+        const db = getDB();
+
+        const categoriesCollection = db.collection("categories");
+
+
+        const result = await categoriesCollection.deleteOne({
+            _id: new ObjectId(id)
+        });
+
+
+        if (result.deletedCount === 0) {
+            return res.status(404).send({
+                message: "Category not found"
+            });
+        }
+
+
+        res.send({
+            message: "Category deleted successfully"
+        });
+
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).send({
+            message: "Internal Server Error"
+        });
+    }
+};
+
 module.exports = {
+    createCategory,
     getAllCategories,
-    getSingleCategory
+    getSingleCategory,
+    updateCategory,
+    deleteCategory
 };
