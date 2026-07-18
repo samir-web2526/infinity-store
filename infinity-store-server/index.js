@@ -6,7 +6,7 @@ dotenv.config();
 
 const { connectDB } = require("./config/db");
 const productRoutes = require("./routes/products.route");
-
+const categoryRoutes = require("./routes/categories.route");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -19,6 +19,7 @@ async function startServer() {
         await connectDB();
 
         app.use("/products", productRoutes);
+        app.use("/categories", categoryRoutes);
 
         app.get("/", (req, res) => {
             res.send("Infinity Store Server is Running...");

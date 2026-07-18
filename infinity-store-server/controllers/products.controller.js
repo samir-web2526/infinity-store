@@ -40,6 +40,7 @@ const getAllProducts = async (req, res) => {
         if (category) {
             query.category = category;
         }
+
         if (brand) {
             query.brand = brand;
         }
