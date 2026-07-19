@@ -18,8 +18,8 @@ async function startServer() {
     try {
         await connectDB();
 
-        app.use("/products", productRoutes);
-        app.use("/categories", categoryRoutes);
+        app.use("/api/products", productRoutes);
+        app.use("/api/categories", categoryRoutes);
 
         app.get("/", (req, res) => {
             res.send("Infinity Store Server is Running...");
