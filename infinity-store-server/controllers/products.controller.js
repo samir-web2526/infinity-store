@@ -3,9 +3,7 @@ const { ObjectId } = require("mongodb");
 const { getDB } = require("../config/db");
 
 const createProduct = async (req, res) => {
-
     try {
-
         const db = getDB();
         const productsCollection = db.collection("products");
 
@@ -32,42 +30,32 @@ const createProduct = async (req, res) => {
             title,
             description,
             category,
-            price: Number(price),
-            discountPercentage: Number(discountPercentage) || 0,
+            price,
+            discountPercentage,
             rating: 0,
-            stock: Number(stock) || 0,
-            tags: tags || [],
-            brand: brand || "",
+            stock,
+            tags,
+            brand,
             sku: `SKU-${Date.now()}`,
-            weight: Number(weight) || 0,
+            weight,
 
             dimensions: {
-                width:
-                    dimensions?.width || null,
-                height:
-                    dimensions?.height || null,
-                depth:
-                    dimensions?.depth || null
+                width: dimensions?.width || null,
+                height: dimensions?.height || null,
+                depth: dimensions?.depth || null
             },
 
-            warrantyInformation:
-                warrantyInformation || "No warranty",
+            warrantyInformation,
+            shippingInformation,
 
-            shippingInformation:
-                shippingInformation || "Ships in 3-5 business days",
-
-            availabilityStatus:
-                Number(stock) > 0
-                    ? "In Stock"
-                    : "Out of Stock",
+            availabilityStatus: stock > 0
+                ? "In Stock"
+                : "Out of Stock",
 
             reviews: [],
 
-            returnPolicy:
-                returnPolicy || "7 days return policy",
-
-            minimumOrderQuantity:
-                Number(minimumOrderQuantity) || 1,
+            returnPolicy,
+            minimumOrderQuantity,
 
             meta: {
                 createdAt: new Date(),
@@ -76,12 +64,11 @@ const createProduct = async (req, res) => {
                 qrCode: ""
             },
 
-            images: images || [],
-            thumbnail: thumbnail || ""
+            images,
+            thumbnail
         };
 
-        const result =
-            await productsCollection.insertOne(newProduct);
+        const result = await productsCollection.insertOne(newProduct);
 
         res.status(201).send({
             message: "Product created successfully",
@@ -198,9 +185,8 @@ const updateProduct = async (req, res) => {
         const { id } = req.params;
 
         const db = getDB();
-        const productsCollection = db.collection("products");
 
-        const updateData = req.body;
+        const productsCollection = db.collection("products");
 
         const result = await productsCollection.updateOne(
             {
@@ -208,7 +194,7 @@ const updateProduct = async (req, res) => {
             },
             {
                 $set: {
-                    ...updateData,
+                    ...req.body,
                     updatedAt: new Date()
                 }
             }
@@ -226,7 +212,6 @@ const updateProduct = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-
         res.status(500).send({
             message: "Internal Server Error"
         });

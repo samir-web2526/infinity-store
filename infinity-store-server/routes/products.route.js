@@ -7,13 +7,42 @@ const {
     updateProduct,
     deleteProduct
 } = require("../controllers/products.controller");
+const validate = require("../middlewares/validate");
+const {
+    createProductSchema,
+    updateProductSchema
+} = require("../validations/product.validation");
+
+const verifyToken = require("../middlewares/verifyToken");
+const verifyAdmin = require("../middlewares/verifyAdmin");
 
 const router = express.Router();
 
-router.post("/", createProduct);
+router.post(
+    "/",
+    verifyToken,
+    verifyAdmin,
+    validate(createProductSchema),
+    createProduct
+);
+
 router.get("/", getAllProducts);
+
 router.get("/:id", getSingleProduct);
-router.patch("/:id", updateProduct);
-router.delete("/:id", deleteProduct);
+
+router.patch(
+    "/:id",
+    verifyToken,
+    verifyAdmin,
+    validate(updateProductSchema),
+    updateProduct
+);
+
+router.delete(
+    "/:id",
+    verifyToken,
+    verifyAdmin,
+    deleteProduct
+);
 
 module.exports = router;
