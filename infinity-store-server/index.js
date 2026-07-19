@@ -11,6 +11,7 @@ const productRoutes = require("./routes/products.route");
 const categoryRoutes = require("./routes/categories.route");
 const authRoutes = require("./routes/auth.route");
 const userRoutes = require("./routes/users.route");
+const cartRoutes = require("./routes/cart.route");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -33,6 +34,7 @@ async function startServer() {
         app.use("/api/users", userRoutes);
         app.use("/api/products", productRoutes);
         app.use("/api/categories", categoryRoutes);
+        app.use("/api/cart", cartRoutes);
 
         app.get("/", (req, res) => {
             res.send("Infinity Store Server is Running...");
