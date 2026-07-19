@@ -7,14 +7,15 @@ const {
     updateProduct,
     deleteProduct
 } = require("../controllers/products.controller");
+
 const validate = require("../middlewares/validate");
+const verifyToken = require("../middlewares/verifyToken");
+const verifyAdmin = require("../middlewares/verifyAdmin");
+
 const {
     createProductSchema,
     updateProductSchema
 } = require("../validations/product.validation");
-
-const verifyToken = require("../middlewares/verifyToken");
-const verifyAdmin = require("../middlewares/verifyAdmin");
 
 const router = express.Router();
 
