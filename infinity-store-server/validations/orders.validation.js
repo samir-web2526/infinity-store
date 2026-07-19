@@ -17,6 +17,16 @@ const createOrderSchema = z.object({
     })
 });
 
+const updateOrderStatusSchema = z.object({
+    orderStatus: z.enum(
+        ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"],
+        {
+            error: "Invalid order status"
+        }
+    )
+});
+
 module.exports = {
     createOrderSchema,
+    updateOrderStatusSchema
 };

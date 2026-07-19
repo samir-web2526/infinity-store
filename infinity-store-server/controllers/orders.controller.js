@@ -125,7 +125,87 @@ const getMyOrders = async (req, res) => {
     }
 };
 
+const getSingleOrder = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const db = getDB();
+        const ordersCollection = db.collection("orders");
+
+        const order = await ordersCollection.findOne({
+            _id: new ObjectId(id)
+        });
+
+        if (!order) {
+            return res.status(404).send({
+                message: "Order not found"
+            });
+        }
+
+        const isOwner = order.userId.toString() === req.user.id;
+        const isAdmin = req.user.role === "admin";
+
+        if (!isOwner && !isAdmin) {
+            return res.status(403).send({
+                message: "Forbidden"
+            });
+        }
+
+        res.send(order);
+
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).send({
+            message: "Internal Server Error"
+        });
+    }
+};
+
+const updateOrderStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { orderStatus } = req.body;
+
+        const db = getDB();
+        const ordersCollection = db.collection("orders");
+
+        const result = await ordersCollection.updateOne(
+            {
+                _id: new ObjectId(id)
+            },
+            {
+                $set: {
+                    orderStatus,
+                    updatedAt: new Date()
+                }
+            }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).send({
+                message: "Order not found"
+            });
+        }
+
+        res.send({
+            message: "Order status updated successfully"
+        });
+
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).send({
+            message: "Internal Server Error"
+        });
+    }
+};
+
+
+
 module.exports = {
     createOrder,
-    getMyOrders
+    getMyOrders,
+    getSingleOrder,
+    updateOrderStatus
 };
