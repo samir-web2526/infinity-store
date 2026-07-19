@@ -3,8 +3,10 @@ const express = require("express");
 const {
     createOrder,
     getMyOrders,
+    getAllOrders,
     getSingleOrder,
-    updateOrderStatus
+    updateOrderStatus,
+    cancelOrder,
 } = require("../controllers/orders.controller");
 
 const validate = require("../middlewares/validate");
@@ -32,6 +34,13 @@ router.get(
 );
 
 router.get(
+    "/all",
+    verifyToken,
+    verifyAdmin,
+    getAllOrders
+);
+
+router.get(
     "/:id",
     verifyToken,
     getSingleOrder
@@ -43,6 +52,12 @@ router.patch(
     verifyAdmin,
     validate(updateOrderStatusSchema),
     updateOrderStatus
+);
+
+router.patch(
+    "/:id/cancel",
+    verifyToken,
+    cancelOrder
 );
 
 module.exports = router;
