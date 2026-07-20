@@ -1,7 +1,10 @@
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router";
-import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/Button";
+import { getProducts } from "@/services/product.api";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -12,16 +15,57 @@ const fadeUp = {
   }),
 };
 
-const fadeIn = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: {
+const slideVariants = {
+  enter: (direction) => ({
+    x: direction > 0 ? 300 : -300,
+    opacity: 0,
+    scale: 0.9,
+  }),
+  center: {
+    x: 0,
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
   },
+  exit: (direction) => ({
+    x: direction < 0 ? 300 : -300,
+    opacity: 0,
+    scale: 0.9,
+    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+  }),
 };
 
 export default function Hero() {
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(1);
+
+  const { data } = useQuery({
+    queryKey: ["hero-products"],
+    queryFn: () => getProducts({ limit: 10, featured: true }),
+  });
+
+  const products = (data?.products ?? []).filter((p) => p.thumbnail || p.images?.length);
+
+  const next = useCallback(() => {
+    if (products.length <= 1) return;
+    setDirection(1);
+    setCurrent((prev) => (prev + 1) % products.length);
+  }, [products.length]);
+
+  const prev = useCallback(() => {
+    if (products.length <= 1) return;
+    setDirection(-1);
+    setCurrent((prev) => (prev - 1 + products.length) % products.length);
+  }, [products.length]);
+
+  useEffect(() => {
+    if (products.length <= 1) return;
+    const timer = setInterval(next, 3000);
+    return () => clearInterval(timer);
+  }, [next, products.length]);
+
+  const product = products[current];
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-muted">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.55_0.15_270/10%),transparent)]" />
@@ -116,35 +160,106 @@ export default function Hero() {
             </motion.div>
           </div>
 
+          {/* Product Image Slider */}
           <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeIn}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="relative flex-1"
           >
             <div className="relative mx-auto aspect-square max-w-md overflow-hidden rounded-3xl bg-gradient-to-br from-muted to-muted/50 shadow-2xl lg:max-w-lg">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="flex flex-col items-center gap-4 text-muted-foreground/40">
-                  <svg
-                    className="size-20"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1}
+              {products.length > 0 && product ? (
+                <AnimatePresence initial={false} custom={direction} mode="wait">
+                  <motion.div
+                    key={product._id + current}
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    className="absolute inset-0"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                    />
-                  </svg>
-                  <span className="text-sm font-medium">Premium Collection</span>
+                    <Link to={`/products/${product._id}`}>
+                      <img
+                        src={product.thumbnail || product.images?.[0]}
+                        alt={product.title}
+                        className="size-full object-cover transition-transform duration-500 hover:scale-105"
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
+                        <p className="text-sm font-semibold text-white">{product.title}</p>
+                        {product.price != null && (
+                          <p className="mt-1 text-lg font-bold text-white">
+                            ৳{product.price.toLocaleString()}
+                          </p>
+                        )}
+                      </div>
+                    </Link>
+                  </motion.div>
+                </AnimatePresence>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex flex-col items-center gap-4 text-muted-foreground/40">
+                    <svg
+                      className="size-20"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                      />
+                    </svg>
+                    <span className="text-sm font-medium">Premium Collection</span>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Nav Arrows */}
+              {products.length > 1 && (
+                <>
+                  <button
+                    onClick={prev}
+                    className="absolute left-3 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 text-foreground shadow-md backdrop-blur-sm transition-colors hover:bg-background"
+                  >
+                    <ChevronLeft className="size-4" />
+                  </button>
+                  <button
+                    onClick={next}
+                    className="absolute right-3 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 text-foreground shadow-md backdrop-blur-sm transition-colors hover:bg-background"
+                  >
+                    <ChevronRight className="size-4" />
+                  </button>
+                </>
+              )}
+
+              {/* Dots */}
+              {products.length > 1 && (
+                <div className="absolute bottom-16 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
+                  {products.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setDirection(i > current ? 1 : -1);
+                        setCurrent(i);
+                      }}
+                      className={`size-2 rounded-full transition-all ${
+                        i === current
+                          ? "w-5 bg-white"
+                          : "bg-white/40 hover:bg-white/60"
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+
               <div className="absolute -right-6 -top-6 size-32 rounded-full bg-primary/5 blur-2xl" />
               <div className="absolute -bottom-6 -left-6 size-40 rounded-full bg-primary/5 blur-3xl" />
             </div>
 
+            {/* Free Shipping Badge */}
             <div className="absolute -bottom-4 -left-4 rounded-2xl border border-border bg-card p-3 shadow-lg sm:-bottom-6 sm:-left-6">
               <div className="flex items-center gap-2">
                 <div className="flex size-8 items-center justify-center rounded-full bg-green-500/10">
@@ -159,6 +274,7 @@ export default function Hero() {
               </div>
             </div>
 
+            {/* Top Rated Badge */}
             <div className="absolute -right-2 -top-2 rounded-2xl border border-border bg-card p-3 shadow-lg sm:-right-4 sm:-top-4">
               <div className="flex items-center gap-2">
                 <div className="flex size-8 items-center justify-center rounded-full bg-amber-500/10">
