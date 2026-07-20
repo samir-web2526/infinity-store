@@ -33,7 +33,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 border-r bg-white p-5">
+    <aside className="w-64 border-r bg-card p-5">
       <h2 className="mb-6 text-2xl font-bold text-blue-600">
         Infinity Store
       </h2>
@@ -48,7 +48,7 @@ export default function Sidebar() {
               `block rounded-md px-4 py-2 transition ${
                 isActive
                   ? "bg-blue-600 text-white"
-                  : "text-slate-700 hover:bg-slate-100"
+                  : "text-foreground hover:bg-muted"
               }`
             }
           >

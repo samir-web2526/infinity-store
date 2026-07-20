@@ -5,6 +5,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "react-hot-toast";
 import AuthProvider from "./context/AuthProvider.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
+import { ThemeProvider } from "./context/ThemeProvider.jsx";
 // import "./index.css";
 import "./style.css";
 import router from "./routes/router";
@@ -18,6 +19,7 @@ const queryClient = new QueryClient();
 createRoot(document.getElementById("root")).render(
   <StrictMode>
    <AuthProvider>
+      <ThemeProvider>
       <CartProvider>
       <QueryClientProvider client={queryClient}>
         <HelmetProvider>
@@ -44,6 +46,7 @@ createRoot(document.getElementById("root")).render(
         </HelmetProvider>
       </QueryClientProvider>
       </CartProvider>
+      </ThemeProvider>
     </AuthProvider>
   </StrictMode>
 );

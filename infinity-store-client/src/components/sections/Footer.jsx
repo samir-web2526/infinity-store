@@ -38,27 +38,27 @@ const SOCIAL_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-foreground text-background">
+    <footer className="border-t border-border bg-card text-card-foreground">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="space-y-5">
             <Link to="/" className="inline-block">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-background text-lg font-bold text-foreground">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-lg font-bold text-primary-foreground">
                 IS
               </div>
             </Link>
-            <p className="text-sm leading-relaxed text-background/70">
+            <p className="text-sm leading-relaxed text-muted-foreground">
               Infinity Store — Your premium destination for quality products at
               unbeatable prices.
             </p>
-            <div className="space-y-3 text-sm text-background/70">
+            <div className="space-y-3 text-sm text-muted-foreground">
               <div className="flex items-start gap-2.5">
-                <MapPin className="mt-0.5 size-4 shrink-0 text-background/50" />
+                <MapPin className="mt-0.5 size-4 shrink-0 text-muted-foreground/50" />
                 <span>Dhaka, Bangladesh</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Phone className="size-4 shrink-0 text-background/50" />
+                <Phone className="size-4 shrink-0 text-muted-foreground/50" />
                 <span>+880 1XXXXXXXXX</span>
               </div>
             </div>
@@ -66,7 +66,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-primary">
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
               Quick Links
             </h3>
             <ul className="space-y-2.5">
@@ -74,7 +74,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     to={link.to}
-                    className="text-sm text-background/70 transition-colors duration-200 hover:text-background"
+                    className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
                   >
                     {link.label}
                   </Link>
@@ -85,7 +85,7 @@ export default function Footer() {
 
           {/* Useful Links */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-primary">
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
               Useful Links
             </h3>
             <ul className="space-y-2.5">
@@ -93,7 +93,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     to={link.to}
-                    className="text-sm text-background/70 transition-colors duration-200 hover:text-background"
+                    className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
                   >
                     {link.label}
                   </Link>
@@ -104,7 +104,7 @@ export default function Footer() {
 
           {/* Stay Connected */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-primary">
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
               Stay Connected
             </h3>
             <div className="flex flex-wrap gap-3">
@@ -117,7 +117,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="flex size-10 items-center justify-center rounded-lg border border-background/20 text-background/70 transition-all duration-200 hover:-translate-y-0.5 hover:border-background/40 hover:text-background"
+                    className="flex size-10 items-center justify-center rounded-lg border border-border text-muted-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/40 hover:text-foreground"
                   >
                     <Icon size={16} />
                   </a>
@@ -129,20 +129,20 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-background/10">
+      <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-5 sm:flex-row sm:px-6 lg:px-8">
-          <p className="text-xs text-background/50">
+          <p className="text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} Infinity Store. All rights
             reserved.
           </p>
-          <div className="flex gap-4 text-xs text-background/50">
-            <Link to="/terms" className="hover:text-background">
+          <div className="flex gap-4 text-xs text-muted-foreground">
+            <Link to="/terms" className="hover:text-foreground">
               Terms
             </Link>
-            <Link to="/privacy" className="hover:text-background">
+            <Link to="/privacy" className="hover:text-foreground">
               Privacy
             </Link>
-            <Link to="/cookies" className="hover:text-background">
+            <Link to="/cookies" className="hover:text-foreground">
               Cookies
             </Link>
           </div>

@@ -1,13 +1,15 @@
 import { Link, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
-import { Search, ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart, Sun, Moon } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { useCart } from "../../context/CartContext";
+import { useTheme } from "../../context/ThemeProvider";
 import { getCart } from "../../services/cart.api";
 
 const Navbar = () => {
     const { user, logout, loading } = useAuth();
     const { cartCount, refetchCartCount } = useCart();
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
     const [search, setSearch] = useState("");
 
@@ -23,12 +25,12 @@ const Navbar = () => {
 
     if (loading) {
             return (
-                <header className="sticky top-0 z-50 h-16 border-b bg-white"></header>
+                <header className="sticky top-0 z-50 h-16 border-b bg-background"></header>
         );
     }
 
     return (
-        <header className="sticky top-0 z-50 border-b bg-white">
+        <header className="sticky top-0 z-50 border-b bg-background">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
 
                 {/* Logo */}
@@ -67,6 +69,15 @@ const Navbar = () => {
                             className="rounded-md border pl-8 pr-3 py-2 text-sm"
                         />
                     </div>
+
+                    {/* Theme Toggle */}
+                    <button
+                        onClick={toggleTheme}
+                        className="flex size-9 items-center justify-center rounded-md border transition-colors hover:bg-muted"
+                        title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                    >
+                        {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+                    </button>
 
                     {/* Cart */}
                     {user && (
@@ -119,7 +130,7 @@ const Navbar = () => {
 
                             <ul
                                 tabIndex={0}
-                                className="menu dropdown-content z-50 mt-3 w-56 rounded-box bg-base-100 p-2 shadow"
+                                className="menu dropdown-content z-50 mt-3 w-56 rounded-box bg-background p-2 shadow"
                             >
                                 <li>
                                     <Link to="/profile">
