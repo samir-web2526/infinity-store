@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { ObjectId } = require("mongodb");
 const { getDB } = require("../config/db");
 
 const register = async (req, res) => {
@@ -23,9 +24,16 @@ const register = async (req, res) => {
         });
 
         if (existingUser) {
-            return res.status(409).send({
-                message: "Email already exists"
-            });
+            return res.status(409).json({
+    success: false,
+    message: "Validation failed",
+    errors: [
+        {
+            field: "email",
+            message: "Email already exists"
+        }
+    ]
+});
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -45,17 +53,19 @@ const register = async (req, res) => {
 
         const result = await usersCollection.insertOne(user);
 
-        res.status(201).send({
-            message: "User registered successfully",
-            insertedId: result.insertedId
-        });
+        res.status(201).json({
+    success: true,
+    message: "User registered successfully",
+    insertedId: result.insertedId
+});
 
     } catch (error) {
         console.log(error);
 
-        res.status(500).send({
-            message: "Internal Server Error"
-        });
+        res.status(500).json({
+    success: false,
+    message: "Internal Server Error"
+});
     }
 };
 
@@ -74,10 +84,21 @@ const login = async (req, res) => {
         });
 
         if (!user) {
-            return res.status(401).send({
+    return res.status(401).json({
+        success: false,
+        message: "Validation failed",
+        errors: [
+            {
+                field: "email",
                 message: "Invalid email or password"
-            });
-        }
+            },
+            {
+                field: "password",
+                message: "Invalid email or password"
+            }
+        ]
+    });
+}
 
         const isPasswordMatched = await bcrypt.compare(
             password,
@@ -85,10 +106,21 @@ const login = async (req, res) => {
         );
 
         if (!isPasswordMatched) {
-            return res.status(401).send({
+    return res.status(401).json({
+        success: false,
+        message: "Validation failed",
+        errors: [
+            {
+                field: "email",
                 message: "Invalid email or password"
-            });
-        }
+            },
+            {
+                field: "password",
+                message: "Invalid email or password"
+            }
+        ]
+    });
+}
 
         const accessToken = jwt.sign(
             {
@@ -131,6 +163,7 @@ const login = async (req, res) => {
         });
 
         res.status(200).send({
+            success: true,
             message: "Login successful",
             accessToken,
             refreshToken
@@ -139,9 +172,10 @@ const login = async (req, res) => {
 
         console.log(error);
 
-        res.status(500).send({
-            message: "Internal Server Error"
-        });
+        res.status(500).json({
+    success: false,
+    message: "Internal Server Error"
+});
     }
 };
 
@@ -164,14 +198,16 @@ const logout = async (req, res) => {
         });
 
         res.status(200).send({
+            success: true,
             message: "Logout successful"
         });
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({
-            message: "Internal Server Error"
-        });
+        res.status(500).json({
+    success: false,
+    message: "Internal Server Error"
+});
     }
 };
 
@@ -179,11 +215,12 @@ const refreshToken = async (req, res) => {
     try {
         const token = req.cookies.refreshToken;
 
-        if (!token) {
-            return res.status(401).send({
-                message: "Refresh token not found"
-            });
-        }
+       if (!token) {
+    return res.status(401).json({
+        success: false,
+        message: "Refresh token not found"
+    });
+       }
 
         const decoded = jwt.verify(
             token,
@@ -198,11 +235,12 @@ const refreshToken = async (req, res) => {
             _id: new ObjectId(decoded.id)
         });
 
-        if (!user) {
-            return res.status(404).send({
-                message: "User not found"
-            });
-        }
+       if (!user) {
+    return res.status(404).json({
+        success: false,
+        message: "User not found"
+    });
+}
 
         const accessToken = jwt.sign(
             {
@@ -252,9 +290,10 @@ const refreshToken = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(401).send({
-            message: "Invalid refresh token"
-        });
+        return res.status(401).json({
+    success: false,
+    message: "Invalid refresh token"
+});
 
     }
 };

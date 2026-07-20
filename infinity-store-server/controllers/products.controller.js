@@ -48,7 +48,7 @@ const createProduct = async (req, res) => {
             warrantyInformation,
             shippingInformation,
 
-            availabilityStatus: stock > 0
+            availabilityStatus: Number(stock) > 0
                 ? "In Stock"
                 : "Out of Stock",
 
@@ -161,6 +161,12 @@ const getSingleProduct = async (req, res) => {
     try {
         const { id } = req.params;
 
+           if (!ObjectId.isValid(id)) {
+            return res.status(400).send({
+                message: "Invalid product id"
+            });
+        }
+
         const db = getDB();
 
         const productsCollection = db.collection("products");
@@ -193,10 +199,10 @@ const updateProduct = async (req, res) => {
                 _id: new ObjectId(id)
             },
             {
-                $set: {
-                    ...req.body,
-                    updatedAt: new Date()
-                }
+                $set:{
+    ...req.body,
+    "meta.updatedAt": new Date()
+}
             }
         );
 

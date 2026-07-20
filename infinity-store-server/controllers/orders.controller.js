@@ -8,27 +8,28 @@ const createOrder = async (req, res) => {
         const db = getDB();
 
         const cartsCollection = db.collection("carts");
+        const productsCollection = db.collection("products");
         const ordersCollection = db.collection("orders");
 
         const cart = await cartsCollection.aggregate([
             {
                 $match: {
-                    userId: new ObjectId(req.user.id)
-                }
+                    userId: new ObjectId(req.user.id),
+                },
             },
             {
-                $unwind: "$items"
+                $unwind: "$items",
             },
             {
                 $lookup: {
                     from: "products",
                     localField: "items.productId",
                     foreignField: "_id",
-                    as: "product"
-                }
+                    as: "product",
+                },
             },
             {
-                $unwind: "$product"
+                $unwind: "$product",
             },
             {
                 $project: {
@@ -40,17 +41,44 @@ const createOrder = async (req, res) => {
                     subtotal: {
                         $multiply: [
                             "$items.quantity",
-                            "$product.price"
-                        ]
-                    }
-                }
-            }
+                            "$product.price",
+                        ],
+                    },
+                },
+            },
         ]).toArray();
 
         if (!cart.length) {
             return res.status(400).send({
-                message: "Cart is empty"
+                message: "Cart is empty",
             });
+        }
+
+        for (const item of cart) {
+            const product = await productsCollection.findOne({
+                _id: item.productId,
+            });
+
+            if (!product) {
+                return res.status(404).send({
+                    message: `${item.title} not found`,
+                });
+            }
+
+            if (
+                product.stock === 0 ||
+                product.availabilityStatus === "Out of Stock"
+            ) {
+                return res.status(400).send({
+                    message: `${item.title} is out of stock`,
+                });
+            }
+
+            if (item.quantity > product.stock) {
+                return res.status(400).send({
+                    message: `Only ${product.stock} ${item.title} available in stock`,
+                });
+            }
         }
 
         const totalItems = cart.reduce(
@@ -73,25 +101,25 @@ const createOrder = async (req, res) => {
             paymentStatus: "pending",
             orderStatus: "pending",
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
         };
 
         const result = await ordersCollection.insertOne(order);
 
         await cartsCollection.deleteOne({
-            userId: new ObjectId(req.user.id)
+            userId: new ObjectId(req.user.id),
         });
 
         res.status(201).send({
             message: "Order placed successfully",
-            insertedId: result.insertedId
+            insertedId: result.insertedId,
         });
 
     } catch (error) {
         console.log(error);
 
         res.status(500).send({
-            message: "Internal Server Error"
+            message: "Internal Server Error",
         });
     }
 };
@@ -193,36 +221,97 @@ const updateOrderStatus = async (req, res) => {
         const { id } = req.params;
         const { orderStatus } = req.body;
 
-        const db = getDB();
-        const ordersCollection = db.collection("orders");
+        const validStatuses = [
+            "pending",
+            "confirmed",
+            "processing",
+            "shipped",
+            "delivered",
+            "cancelled",
+        ];
 
-        const result = await ordersCollection.updateOne(
+        if (!validStatuses.includes(orderStatus)) {
+            return res.status(400).send({
+                message: "Invalid order status",
+            });
+        }
+
+        const db = getDB();
+
+        const ordersCollection = db.collection("orders");
+        const productsCollection = db.collection("products");
+
+        const order = await ordersCollection.findOne({
+            _id: new ObjectId(id),
+        });
+
+        if (!order) {
+            return res.status(404).send({
+                message: "Order not found",
+            });
+        }
+
+        if (
+            orderStatus === "delivered" &&
+            order.orderStatus !== "delivered"
+        ) {
+            for (const item of order.items) {
+                const product = await productsCollection.findOne({
+                    _id: item.productId,
+                });
+
+                if (!product) {
+                    return res.status(404).send({
+                        message: `${item.title} not found`,
+                    });
+                }
+
+                if (product.stock < item.quantity) {
+                    return res.status(400).send({
+                        message: `${item.title} is out of stock`,
+                    });
+                }
+
+                const newStock = product.stock - item.quantity;
+
+                await productsCollection.updateOne(
+                    {
+                        _id: item.productId,
+                    },
+                    {
+                        $set: {
+                            stock: newStock,
+                            availabilityStatus:
+                                newStock > 0
+                                    ? "In Stock"
+                                    : "Out of Stock",
+                        },
+                    }
+                );
+            }
+        }
+
+        await ordersCollection.updateOne(
             {
-                _id: new ObjectId(id)
+                _id: new ObjectId(id),
             },
             {
                 $set: {
                     orderStatus,
-                    updatedAt: new Date()
-                }
+                    updatedAt: new Date(),
+                },
             }
         );
 
-        if (result.matchedCount === 0) {
-            return res.status(404).send({
-                message: "Order not found"
-            });
-        }
-
         res.send({
-            message: "Order status updated successfully"
+            message: "Order status updated successfully",
         });
 
     } catch (error) {
         console.log(error);
 
         res.status(500).send({
-            message: "Internal Server Error"
+            message: "Internal Server Error",
         });
     }
 };
