@@ -127,11 +127,13 @@ const Navbar = () => {
                                     </Link>
                                 </li>
 
-                                <li>
-                                    <Link to="/orders">
-                                        My Orders
-                                    </Link>
-                                </li>
+                                {user.role !== "admin" && (
+                                    <li>
+                                        <Link to="/orders">
+                                            My Orders
+                                        </Link>
+                                    </li>
+                                )}
 
                                 {user.role === "admin" && (
                                     <li>

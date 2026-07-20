@@ -25,7 +25,7 @@ export const getAllOrders = async () => {
   return data;
 };
 
-export const updateOrderStatus = async (id, payload) => {
-  const { data } = await axiosSecure.patch(`/orders/${id}/status`, payload);
+export const updateOrderStatus = async (id, orderStatus) => {
+  const { data } = await axiosSecure.patch(`/orders/${id}/status`, { orderStatus });
   return data;
 };

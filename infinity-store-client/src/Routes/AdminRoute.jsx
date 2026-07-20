@@ -1,7 +1,7 @@
-import { Navigate, Outlet } from "react-router";
+import { Navigate } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 
-export default function AdminRoute() {
+export default function AdminRoute({ children }) {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -13,7 +13,7 @@ export default function AdminRoute() {
   }
 
   if (user?.role === "admin") {
-    return <Outlet />;
+    return children;
   }
 
   return <Navigate to="/" replace />;

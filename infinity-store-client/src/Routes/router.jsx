@@ -19,7 +19,13 @@ import OrderDetails from "../pages/Orders/OrderDetails";
 import Profile from "../pages/Profile/Profile";
 import ChangePassword from "../pages/Profile/ChangePassword";
 import AdminDashboard from "../pages/Dashboard/AdminDashboard";
+import AdminProducts from "../pages/Dashboard/AdminProducts";
+import AdminProductDetails from "@/pages/Dashboard/AdminProductDetails";
 import NotFound from "../pages/Error/NotFound";
+import AdminCategories from "@/pages/Dashboard/AdminCategories";
+import AdminOrders from "@/pages/Dashboard/AdminOrders";
+import AdminOrderDetails from "@/pages/Dashboard/AdminOrderDetails";
+import AdminUsers from "@/pages/Dashboard/AdminUsers";
 
 const router = createBrowserRouter([
   // Public Routes
@@ -90,18 +96,38 @@ const router = createBrowserRouter([
 
       // Admin Routes
       {
-        element: <AdminRoute />,
+        path: "/dashboard",
+        element: <DashboardLayout />,
         children: [
           {
-            path: "/dashboard",
-            element: <DashboardLayout />,
-            children: [
-              {
-                index: true,
-                element: <AdminDashboard />,
-              },
-            ],
+            index: true,
+            element: <AdminRoute><AdminDashboard /></AdminRoute>,
           },
+          {
+            path: "products",
+            element: <AdminRoute><AdminProducts /></AdminRoute>,
+          },
+          {
+            path: "products/:id",
+            element: <AdminRoute><AdminProductDetails /></AdminRoute>,
+          },
+          {
+            path: "categories",
+            element: <AdminRoute><AdminCategories /></AdminRoute>,
+          },
+          {
+            path: "orders",
+            element: <AdminRoute><AdminOrders /></AdminRoute>,
+          },
+          {
+            path: "orders/:id",
+            element: <AdminRoute><AdminOrderDetails /></AdminRoute>,
+          },
+          {
+            path: "users",
+            element: <AdminRoute><AdminUsers /></AdminRoute>,
+          }
+
         ],
       },
     ],
