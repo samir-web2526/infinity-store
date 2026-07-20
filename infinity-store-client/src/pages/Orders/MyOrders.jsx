@@ -1,8 +1,8 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-import { Package, Truck, X } from "lucide-react";
+import { Package, Truck, X, ArrowLeft } from "lucide-react";
 import { getOrders, cancelOrder } from "@/services/order.api";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +44,7 @@ function formatDate(dateStr) {
 }
 
 export default function MyOrders() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
@@ -95,6 +96,10 @@ export default function MyOrders() {
   return (
     <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
+        <Button variant="ghost" size="sm" className="mb-4" onClick={() => navigate("/")}>
+          <ArrowLeft className="size-4" data-icon="inline-start" />
+          Back to Home
+        </Button>
         <h1 className="mb-6 text-2xl font-bold tracking-tight text-foreground">
           My Orders ({orders.length})
         </h1>
