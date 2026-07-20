@@ -1,6 +1,21 @@
-import axiosInstance from "../utils/axiosInstance";
+import axiosSecure from "../utils/axiosSecure";
 
-export const getCart = () => axiosInstance.get("/cart");
-export const addToCart = (payload) => axiosInstance.post("/cart", payload);
-export const updateCartItem = (id, payload) => axiosInstance.put(`/cart/${id}`, payload);
-export const removeCartItem = (id) => axiosInstance.delete(`/cart/${id}`);
+export const getCart = async () => {
+  const { data } = await axiosSecure.get("/cart");
+  return data;
+};
+
+export const addToCart = async (payload) => {
+  const { data } = await axiosSecure.post("/cart", payload);
+  return data;
+};
+
+export const updateCartItem = async (id, payload) => {
+  const { data } = await axiosSecure.patch(`/cart/${id}`, payload);
+  return data;
+};
+
+export const removeCartItem = async (id) => {
+  const { data } = await axiosSecure.delete(`/cart/${id}`);
+  return data;
+};

@@ -1,23 +1,16 @@
-import { useState, useEffect } from "react";
-import { getProducts } from "../services/product.api";
+import { useQuery } from "@tanstack/react-query";
+import useAxios from "./useAxios";
 
-export function useProducts() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+const useProducts = () => {
+  const axios = useAxios();
 
-  useEffect(() => {
-    let mounted = true;
+  return useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const { data } = await axios.get("/products");
+      return data;
+    },
+  });
+};
 
-    getProducts()
-      .then((res) => {
-        if (mounted) setProducts(res?.data || []);
-      })
-      .finally(() => mounted && setLoading(false));
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  return { products, loading };
-}
+export default useProducts;

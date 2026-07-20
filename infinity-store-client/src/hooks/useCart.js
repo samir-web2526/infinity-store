@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import useAxios from "./useAxios";
 
-export function useCart() {
-  const [cart, setCart] = useState([]);
+const useCart = () => {
+  const axios = useAxios();
 
-  const addToCart = (item) => {
-    setCart((prev) => [...prev, item]);
-  };
+  return useQuery({
+    queryKey: ["cart"],
+    queryFn: async () => {
+      const { data } = await axios.get("/cart");
+      return data;
+    },
+  });
+};
 
-  return { cart, addToCart };
-}
+export default useCart;

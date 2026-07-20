@@ -1,5 +1,22 @@
-import axiosInstance from "../utils/axiosInstance";
+import axiosPublic from "../utils/axiosPublic";
+import axiosSecure from "../utils/axiosSecure";
 
-export const loginUser = (payload) => axiosInstance.post("/auth/login", payload);
-export const registerUser = (payload) => axiosInstance.post("/auth/register", payload);
-export const getProfile = () => axiosInstance.get("/auth/me");
+export const loginUser = async (payload) => {
+  const { data } = await axiosPublic.post("/auth/login", payload);
+  return data;
+};
+
+export const registerUser = async (payload) => {
+  const { data } = await axiosPublic.post("/auth/register", payload);
+  return data;
+};
+
+export const logoutUser = async () => {
+  const { data } = await axiosSecure.post("/auth/logout");
+  return data;
+};
+
+export const getProfile = async () => {
+  const { data } = await axiosSecure.get("/users/profile");
+  return data;
+};

@@ -1,12 +1,12 @@
+import Sidebar from "@/pages/sharedPages/Sidebar";
 import { Outlet } from "react-router";
 
 export default function DashboardLayout() {
   return (
-    <div className="min-h-screen bg-slate-100">
-      <aside className="border-r bg-white p-4">
-        <h2 className="font-semibold">Admin Panel</h2>
-      </aside>
-      <main className="p-4">
+    <div className="flex min-h-screen bg-slate-100">
+      <Sidebar />
+
+      <main className="flex-1 p-6">
         <Outlet />
       </main>
     </div>
