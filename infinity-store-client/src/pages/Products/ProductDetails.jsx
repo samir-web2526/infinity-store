@@ -106,6 +106,13 @@ export default function ProductDetails() {
                       </Badge>
                     </div>
                   )}
+                  {product.stock === 0 && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
+                      <Badge variant="destructive" className="text-sm font-semibold">
+                        Out of Stock
+                      </Badge>
+                    </div>
+                  )}
                 </div>
 
                 {/* Details */}
@@ -162,6 +169,27 @@ export default function ProductDetails() {
                     {product.sku && <span>SKU: {product.sku}</span>}
                   </div>
 
+                  {product.stock > 0 && (
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className={`text-[11px] ${product.stock <= 5 ? "font-medium text-red-500" : "text-muted-foreground"}`}>
+                          {product.stock <= 5 ? `${product.stock} left` : `${product.stock} in stock`}
+                        </span>
+                        <span className="text-[11px] text-muted-foreground">
+                          {Math.round(Math.min((product.stock / 100) * 100, 100))}%
+                        </span>
+                      </div>
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            product.stock <= 25 ? "bg-red-500" : "bg-primary"
+                          }`}
+                          style={{ width: `${Math.min((product.stock / 100) * 100, 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   <div className="mt-1 flex flex-col gap-2 sm:flex-row">
                     <Button
                       size="lg"
@@ -170,7 +198,7 @@ export default function ProductDetails() {
                       onClick={() => addToCart(product._id)}
                     >
                       <ShoppingCart className="size-4" data-icon="inline-start" />
-                      Add to Cart
+                      {product.stock === 0 ? "Unavailable" : "Add to Cart"}
                     </Button>
                     <Button
                       variant="outline"
@@ -178,7 +206,7 @@ export default function ProductDetails() {
                       className="rounded-lg"
                       disabled={product.stock === 0}
                     >
-                      Buy Now
+                      {product.stock === 0 ? "Unavailable" : "Buy Now"}
                     </Button>
                   </div>
 

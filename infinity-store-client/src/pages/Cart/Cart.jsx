@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router";
 import { motion } from "framer-motion";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, AlertTriangle } from "lucide-react";
 import { getCart, updateCartItem, removeCartItem } from "@/services/cart.api";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/Button";
@@ -22,6 +22,15 @@ function CartSkeleton() {
       ))}
     </div>
   );
+}
+
+function getItemStatus(item) {
+  const qty = item.quantity ?? 1;
+  const stock = item.stock ?? 0;
+  if (stock === 0 || qty > stock) {
+    return { ok: false, message: stock === 0 ? "Out of stock" : `Only ${stock} available` };
+  }
+  return { ok: true, message: "" };
 }
 
 export default function Cart() {
@@ -54,6 +63,10 @@ export default function Cart() {
 
   const totalItems = items.reduce((sum, item) => sum + (item.quantity ?? 1), 0);
   const totalPrice = items.reduce((sum, item) => sum + (item.subtotal ?? item.price * (item.quantity ?? 1)), 0);
+
+  const itemStatuses = items.map((item) => ({ item, ...getItemStatus(item) }));
+  const hasStockIssues = itemStatuses.some((s) => !s.ok);
+  const stockIssueCount = itemStatuses.filter((s) => !s.ok).length;
 
   if (isLoading) {
     return (
@@ -98,16 +111,27 @@ export default function Cart() {
           </Button>
         </div>
 
+        {hasStockIssues && (
+          <div className="mb-6 flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-400">
+            <AlertTriangle className="size-5 shrink-0" />
+            <p>
+              {stockIssueCount} item{stockIssueCount > 1 ? "s have" : " has"} stock issues. Please adjust quantities before checkout.
+            </p>
+          </div>
+        )}
+
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Items */}
           <div className="space-y-4 lg:col-span-2">
-            {items.map((item, i) => (
+            {itemStatuses.map(({ item, ok, message }, i) => (
               <motion.div
                 key={item.productId}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="flex gap-4 rounded-xl border border-border bg-card p-4 shadow-sm"
+                className={`flex gap-4 rounded-xl border bg-card p-4 shadow-sm ${
+                  !ok ? "border-amber-300 dark:border-amber-700" : "border-border"
+                }`}
               >
                 <Link
                   to={`/products/${item.productId}`}
@@ -132,6 +156,13 @@ export default function Cart() {
                       {item.category}
                     </p>
                   </div>
+
+                  {!ok && (
+                    <div className="mt-1.5 flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
+                      <AlertTriangle className="size-3" />
+                      <span>{message}</span>
+                    </div>
+                  )}
 
                   <div className="mt-2 flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -162,6 +193,9 @@ export default function Cart() {
                       >
                         <Plus className="size-3" />
                       </button>
+                      <span className="ml-1 text-xs text-muted-foreground">
+                        / {item.stock} available
+                      </span>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -205,9 +239,10 @@ export default function Cart() {
               <Button
                 className="mt-6 w-full rounded-lg"
                 size="lg"
+                disabled={hasStockIssues}
                 onClick={() => navigate("/checkout")}
               >
-                Proceed to Checkout
+                {hasStockIssues ? "Fix Stock Issues to Checkout" : "Proceed to Checkout"}
               </Button>
             </div>
           </div>

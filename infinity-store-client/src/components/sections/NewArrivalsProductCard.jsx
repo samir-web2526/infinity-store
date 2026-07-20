@@ -22,6 +22,34 @@ function isNew(dateStr, days = 7) {
   return diff <= days * 24 * 60 * 60 * 1000;
 }
 
+function StockBar({ stock, maxStock }) {
+  if (stock === 0) return null;
+  const ref = maxStock || 100;
+  const percentage = Math.min((stock / ref) * 100, 100);
+  const isLow = percentage <= 25;
+
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between">
+        <span className={`text-[11px] ${stock <= 5 ? "font-medium text-red-500" : "text-muted-foreground"}`}>
+          {stock <= 5 ? `${stock} left` : `${stock} in stock`}
+        </span>
+        <span className="text-[11px] text-muted-foreground">
+          {Math.round(percentage)}%
+        </span>
+      </div>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+        <div
+          className={`h-full rounded-full transition-all duration-500 ${
+            isLow ? "bg-red-500" : "bg-primary"
+          }`}
+          style={{ width: `${percentage}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function NewArrivalsProductCard({ product, index }) {
   const { addToCart } = useAddToCart();
   const hasDiscount = product.discountPercentage > 0;
@@ -29,6 +57,7 @@ export default function NewArrivalsProductCard({ product, index }) {
     ? (product.price * (1 - product.discountPercentage / 100)).toFixed(2)
     : null;
   const recent = isNew(product.meta?.createdAt);
+  const isOutOfStock = product.stock === 0;
 
   return (
     <motion.div
@@ -68,7 +97,15 @@ export default function NewArrivalsProductCard({ product, index }) {
               )}
             </div>
 
-            {product.stock === 0 && (
+            {product.stock <= 5 && product.stock > 0 && (
+              <div className="absolute right-3 top-3 z-10">
+                <Badge variant="secondary" className="text-[11px] font-semibold">
+                  Only {product.stock} left
+                </Badge>
+              </div>
+            )}
+
+            {isOutOfStock && (
               <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60 backdrop-blur-sm">
                 <Badge variant="destructive" className="text-xs font-semibold">
                   Out of Stock
@@ -106,7 +143,7 @@ export default function NewArrivalsProductCard({ product, index }) {
               </span>
             </div>
 
-            <div className="flex items-baseline gap-2">
+            <div className="mt-auto flex items-baseline gap-2">
               <span className="text-lg font-bold text-foreground">
                 ${hasDiscount ? discountedPrice : product.price?.toFixed(2)}
               </span>
@@ -123,6 +160,8 @@ export default function NewArrivalsProductCard({ product, index }) {
                 Added {formatDate(product.meta.createdAt)}
               </div>
             )}
+
+            <StockBar stock={product.stock} maxStock={100} />
           </div>
 
           <div className="p-4 pt-0">
@@ -130,14 +169,14 @@ export default function NewArrivalsProductCard({ product, index }) {
               variant="outline"
               size="sm"
               className="w-full rounded-lg"
-              disabled={product.stock === 0}
+              disabled={isOutOfStock}
               onClick={(e) => {
                 e.preventDefault();
                 addToCart(product._id);
               }}
             >
               <ShoppingCart className="size-4" data-icon="inline-start" />
-              Add to Cart
+              {isOutOfStock ? "Unavailable" : "Add to Cart"}
             </Button>
           </div>
         </div>
