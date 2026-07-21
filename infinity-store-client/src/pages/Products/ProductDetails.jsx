@@ -8,6 +8,7 @@ import { useAddToCart } from "@/hooks/useAddToCart";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatBDT } from "@/utils/currency";
 
 function ModalSkeleton() {
   return (
@@ -147,11 +148,11 @@ export default function ProductDetails() {
 
                   <div className="flex items-baseline gap-3">
                     <span className="text-2xl font-bold text-foreground">
-                      ${hasDiscount ? discountedPrice : product.price?.toFixed(2)}
+                      {formatBDT(hasDiscount ? discountedPrice : product.price)}
                     </span>
                     {hasDiscount && (
                       <span className="text-base text-muted-foreground line-through">
-                        ${product.price?.toFixed(2)}
+                        {formatBDT(product.price)}
                       </span>
                     )}
                   </div>

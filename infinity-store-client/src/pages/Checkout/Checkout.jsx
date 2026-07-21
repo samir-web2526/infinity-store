@@ -5,12 +5,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { ArrowLeft } from "lucide-react";
 import { getCart } from "@/services/cart.api";
 import { createOrder } from "@/services/order.api";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatBDT } from "@/utils/currency";
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -18,6 +20,7 @@ const checkoutSchema = z.object({
   address: z.string().min(5, "Address must be at least 5 characters"),
   city: z.string().min(2, "City must be at least 2 characters"),
   postalCode: z.string().min(3, "Postal code must be at least 3 characters"),
+  deliveryArea: z.enum(["inside_dhaka", "outside_dhaka"], { required_error: "Please select a delivery area" }),
 });
 
 function CheckoutSkeleton() {
@@ -41,6 +44,7 @@ export default function Checkout() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
     setError,
   } = useForm({
@@ -51,6 +55,7 @@ export default function Checkout() {
       address: "",
       city: "",
       postalCode: "",
+      deliveryArea: "inside_dhaka",
     },
   });
 
@@ -65,6 +70,16 @@ export default function Checkout() {
     (sum, item) => sum + (item.subtotal ?? item.price * (item.quantity ?? 1)),
     0
   );
+
+  const FREE_SHIPPING_THRESHOLD = 100;
+  const SHIPPING_INSIDE_DHAKA = 1;
+  const SHIPPING_OUTSIDE_DHAKA = 2;
+
+  const watchedDeliveryArea = watch("deliveryArea");
+  const isInsideDhaka = watchedDeliveryArea === "inside_dhaka";
+  const isFreeShipping = totalPrice >= FREE_SHIPPING_THRESHOLD;
+  const shipping = isFreeShipping ? 0 : (isInsideDhaka ? SHIPPING_INSIDE_DHAKA : SHIPPING_OUTSIDE_DHAKA);
+  const total = totalPrice + shipping;
 
   const orderMutation = useMutation({
     mutationFn: createOrder,
@@ -104,6 +119,7 @@ export default function Checkout() {
         address: data.address,
         city: data.city,
         postalCode: data.postalCode,
+        deliveryArea: data.deliveryArea,
       },
       paymentMethod: "Cash on Delivery",
     });
@@ -135,13 +151,19 @@ export default function Checkout() {
   return (
     <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
-        <motion.h1
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6 text-2xl font-bold tracking-tight text-foreground"
-        >
-          Checkout
-        </motion.h1>
+        <div className="mb-6 flex items-center justify-between">
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-2xl font-bold tracking-tight text-foreground"
+          >
+            Checkout
+          </motion.h1>
+          <Button variant="ghost" size="sm" onClick={() => navigate("/cart")}>
+            <ArrowLeft className="size-4" data-icon="inline-start" />
+            Back to Cart
+          </Button>
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-8 lg:grid-cols-5">
@@ -211,6 +233,21 @@ export default function Checkout() {
                   </div>
                   <div className="sm:col-span-2">
                     <label className="mb-1.5 block text-sm font-medium text-foreground">
+                      Delivery Area *
+                    </label>
+                    <select
+                      {...register("deliveryArea")}
+                      className="flex h-10 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <option value="inside_dhaka">inside Dhaka - ৳60</option>
+                      <option value="outside_dhaka">outside Dhaka - ৳120</option>
+                    </select>
+                    {errors.deliveryArea && (
+                      <p className="mt-1 text-xs text-red-500">{errors.deliveryArea.message}</p>
+                    )}
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="mb-1.5 block text-sm font-medium text-foreground">
                       Postal Code *
                     </label>
                     <Input
@@ -268,7 +305,7 @@ export default function Checkout() {
                         </p>
                       </div>
                       <span className="text-sm font-medium text-foreground">
-                        ${(item.subtotal ?? item.price * item.quantity).toFixed(2)}
+                        {formatBDT(item.subtotal ?? item.price * item.quantity)}
                       </span>
                     </div>
                   ))}
@@ -277,16 +314,25 @@ export default function Checkout() {
                 <div className="space-y-3 border-t border-border pt-4 text-sm">
                   <div className="flex justify-between text-muted-foreground">
                     <span>Subtotal ({totalItems} items)</span>
-                    <span>${totalPrice.toFixed(2)}</span>
+                    <span>{formatBDT(totalPrice)}</span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
-                    <span>Shipping</span>
-                    <span className="text-emerald-600">Free</span>
+                    <span>Shipping {isInsideDhaka ? "(Dhaka)" : "(Outside Dhaka)"}</span>
+                    {isFreeShipping ? (
+                      <span className="text-emerald-600">Free</span>
+                    ) : (
+                      <span>{formatBDT(shipping)}</span>
+                    )}
                   </div>
+                  {!isFreeShipping && (
+                    <p className="text-xs text-muted-foreground">
+                      Add {formatBDT(FREE_SHIPPING_THRESHOLD - totalPrice)} more for free shipping
+                    </p>
+                  )}
                   <div className="border-t border-border pt-3">
                     <div className="flex justify-between text-base font-bold text-foreground">
                       <span>Total</span>
-                      <span>${totalPrice.toFixed(2)}</span>
+                      <span>{formatBDT(total)}</span>
                     </div>
                   </div>
                 </div>

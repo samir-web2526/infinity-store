@@ -6,6 +6,7 @@ import { ArrowLeft, Package, Truck, MapPin, CreditCard, X } from "lucide-react";
 import { getOrderById, cancelOrder } from "@/services/order.api";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatBDT } from "@/utils/currency";
 
 const STATUS_STEPS = ["pending", "confirmed", "processing", "shipped", "delivered"];
 
@@ -182,11 +183,11 @@ export default function OrderDetails() {
                           {item.title}
                         </Link>
                         <p className="mt-0.5 text-xs text-muted-foreground">
-                          Qty: {item.quantity} &times; ${item.price?.toFixed(2)}
+                          Qty: {item.quantity} &times; {formatBDT(item.price)}
                         </p>
                       </div>
                       <span className="text-sm font-medium text-foreground">
-                        ${item.subtotal?.toFixed(2)}
+                        {formatBDT(item.subtotal)}
                       </span>
                     </div>
                   ))}
@@ -202,7 +203,7 @@ export default function OrderDetails() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between text-muted-foreground">
                     <span>Subtotal</span>
-                    <span>${order.totalPrice?.toFixed(2)}</span>
+                    <span>{formatBDT(order.totalPrice)}</span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
                     <span>Shipping</span>
@@ -211,7 +212,7 @@ export default function OrderDetails() {
                   <div className="border-t border-border pt-2">
                     <div className="flex justify-between font-bold text-foreground">
                       <span>Total</span>
-                      <span>${order.totalPrice?.toFixed(2)}</span>
+                      <span>{formatBDT(order.totalPrice)}</span>
                     </div>
                   </div>
                 </div>

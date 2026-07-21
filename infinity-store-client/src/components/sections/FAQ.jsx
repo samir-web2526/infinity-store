@@ -29,20 +29,14 @@ const FAQ_ITEMS = [
     id: "faq-4",
     question: "Which payment methods do you accept?",
     answer:
-      "We accept major credit cards, debit cards, mobile banking, and other secure online payment methods.",
+      "We currently offer Cash on Delivery (COD) as our payment method. Pay when your order arrives at your doorstep.",
   },
   {
     id: "faq-5",
     question: "Can I track my order?",
     answer:
       "Yes. After your order is confirmed, you'll receive tracking information so you can monitor your shipment.",
-  },
-  {
-    id: "faq-6",
-    question: "Is my payment secure?",
-    answer:
-      "Yes. All payments are processed through secure and encrypted payment gateways to keep your information safe.",
-  },
+  }
 ];
 
 export default function FAQ() {

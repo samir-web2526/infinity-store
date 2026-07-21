@@ -27,7 +27,7 @@ export default function DeliveryRules() {
           <div>
             <h2 className="text-xl font-bold text-foreground">3. Shipping Charges</h2>
             <p className="mt-2 text-muted-foreground">
-              Standard shipping is free for orders over ৳1000. A flat rate of ৳60 applies for
+              Standard shipping is free for orders over ৳6,000. A flat rate of ৳60 applies for
               orders within Dhaka, and ৳120 for orders outside Dhaka.
             </p>
           </div>

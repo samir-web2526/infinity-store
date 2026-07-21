@@ -7,6 +7,7 @@ import { getOrders, cancelOrder } from "@/services/order.api";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatBDT } from "@/utils/currency";
 
 const STATUS_COLORS = {
   pending: "bg-yellow-100 text-yellow-800",
@@ -172,7 +173,7 @@ export default function MyOrders() {
                   {order.shippingAddress?.city}
                 </span>
                 <span className="text-sm font-bold text-foreground">
-                  ${order.totalPrice?.toFixed(2)}
+                  {formatBDT(order.totalPrice)}
                 </span>
               </div>
             </motion.div>

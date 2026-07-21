@@ -4,6 +4,7 @@ import { Star, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { useAddToCart } from "@/hooks/useAddToCart";
+import { formatBDT } from "@/utils/currency";
 
 function StockBar({ stock, maxStock }) {
   const percentage = maxStock > 0 ? Math.min((stock / maxStock) * 100, 100) : 0;
@@ -127,11 +128,11 @@ export default function FlashSaleProductCard({ product, index, isFeatured = fals
 
             <div className="flex items-baseline gap-2">
               <span className="text-lg font-bold text-foreground">
-                ${hasDiscount ? discountedPrice : product.price?.toFixed(2)}
+                {formatBDT(hasDiscount ? discountedPrice : product.price)}
               </span>
               {hasDiscount && (
                 <span className="text-sm text-muted-foreground line-through">
-                  ${product.price?.toFixed(2)}
+                  {formatBDT(product.price)}
                 </span>
               )}
             </div>

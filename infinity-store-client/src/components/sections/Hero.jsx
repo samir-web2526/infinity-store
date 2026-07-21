@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
@@ -41,10 +41,39 @@ export default function Hero() {
 
   const { data } = useQuery({
     queryKey: ["hero-products"],
-    queryFn: () => getProducts({ limit: 10, featured: true }),
+    queryFn: () => getProducts({ limit: 50, featured: true }),
+  });
+
+  const { data: allData } = useQuery({
+    queryKey: ["hero-stats"],
+    queryFn: () => getProducts({ limit: 1000 }),
   });
 
   const products = (data?.products ?? []).filter((p) => p.thumbnail || p.images?.length);
+
+  const stats = useMemo(() => {
+    const allProducts = allData?.products ?? [];
+    const totalProducts = allProducts.length;
+
+    let totalReviews = 0;
+    let totalRating = 0;
+    for (const product of allProducts) {
+      for (const review of product.reviews ?? []) {
+        totalReviews++;
+        totalRating += review.rating ?? 0;
+      }
+    }
+
+    const avgRating = totalReviews > 0
+      ? (totalRating / totalReviews).toFixed(1)
+      : "4.9";
+
+    const satisfaction = totalReviews > 0
+      ? Math.round((totalRating / totalReviews / 5) * 100)
+      : 98;
+
+    return { totalProducts, totalReviews, satisfaction, avgRating };
+  }, [allData]);
 
   const next = useCallback(() => {
     if (products.length <= 1) return;
@@ -144,17 +173,23 @@ export default function Hero() {
               className="mt-10 flex items-center justify-center gap-8 text-sm text-muted-foreground lg:justify-start"
             >
               <div className="flex flex-col">
-                <span className="text-lg font-semibold text-foreground">10k+</span>
+                <span className="text-lg font-semibold text-foreground">
+                  {stats.totalProducts > 0 ? `${stats.totalProducts}+` : "10k+"}
+                </span>
                 <span>Products</span>
               </div>
               <div className="h-8 w-px bg-border" />
               <div className="flex flex-col">
-                <span className="text-lg font-semibold text-foreground">50k+</span>
+                <span className="text-lg font-semibold text-foreground">
+                  {stats.totalReviews > 0 ? `${stats.totalReviews}+` : "50k+"}
+                </span>
                 <span>Happy Customers</span>
               </div>
               <div className="h-8 w-px bg-border" />
               <div className="flex flex-col">
-                <span className="text-lg font-semibold text-foreground">99%</span>
+                <span className="text-lg font-semibold text-foreground">
+                  {stats.satisfaction}%
+                </span>
                 <span>Satisfaction</span>
               </div>
             </motion.div>
@@ -269,7 +304,7 @@ export default function Hero() {
                 </div>
                 <div>
                   <p className="text-xs font-medium text-foreground">Free Shipping</p>
-                  <p className="text-[10px] text-muted-foreground">Orders over $50</p>
+                  <p className="text-[10px] text-muted-foreground">Orders over ৳6,000</p>
                 </div>
               </div>
             </div>
@@ -284,7 +319,7 @@ export default function Hero() {
                 </div>
                 <div>
                   <p className="text-xs font-medium text-foreground">Top Rated</p>
-                  <p className="text-[10px] text-muted-foreground">4.9/5 Rating</p>
+                  <p className="text-[10px] text-muted-foreground">{stats.avgRating}/5 Rating</p>
                 </div>
               </div>
             </div>

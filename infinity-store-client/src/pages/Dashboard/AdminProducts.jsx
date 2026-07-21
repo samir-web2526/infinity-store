@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { Plus, Eye, Pencil, X, Package } from "lucide-react";
 import { Link } from "react-router";
 import { getProducts, createProduct } from "@/services/product.api";
+import { formatBDT } from "@/utils/currency";
 import { getCategories } from "@/services/category.api";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/input";
@@ -309,7 +310,7 @@ export default function AdminProducts() {
                     <td className="px-5 py-3">
                       <Badge variant="secondary" className="text-[11px]">{product.category}</Badge>
                     </td>
-                    <td className="px-5 py-3 font-medium text-foreground">${product.price?.toFixed(2)}</td>
+                    <td className="px-5 py-3 font-medium text-foreground">{formatBDT(product.price)}</td>
                     <td className="px-5 py-3">
                       <span className={`font-medium ${product.stock <= 10 ? "text-red-600" : "text-foreground"}`}>
                         {product.stock}

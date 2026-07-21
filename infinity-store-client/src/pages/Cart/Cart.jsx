@@ -6,6 +6,7 @@ import { getCart, updateCartItem, removeCartItem } from "@/services/cart.api";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatBDT } from "@/utils/currency";
 
 function CartSkeleton() {
   return (
@@ -63,6 +64,9 @@ export default function Cart() {
 
   const totalItems = items.reduce((sum, item) => sum + (item.quantity ?? 1), 0);
   const totalPrice = items.reduce((sum, item) => sum + (item.subtotal ?? item.price * (item.quantity ?? 1)), 0);
+  const FREE_SHIPPING_THRESHOLD = 100;
+  const SHIPPING_INSIDE_DHAKA = 1;
+  const SHIPPING_OUTSIDE_DHAKA = 2;
 
   const itemStatuses = items.map((item) => ({ item, ...getItemStatus(item) }));
   const hasStockIssues = itemStatuses.some((s) => !s.ok);
@@ -200,7 +204,7 @@ export default function Cart() {
 
                     <div className="flex items-center gap-3">
                       <span className="text-sm font-bold text-foreground">
-                        ${(item.subtotal ?? item.price * item.quantity).toFixed(2)}
+                        {formatBDT(item.subtotal ?? item.price * item.quantity)}
                       </span>
                       <button
                         className="flex size-7 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
@@ -223,16 +227,25 @@ export default function Cart() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between text-muted-foreground">
                   <span>Subtotal ({totalItems} items)</span>
-                  <span>${totalPrice.toFixed(2)}</span>
+                  <span>{formatBDT(totalPrice)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Shipping</span>
-                  <span className="text-emerald-600">Free</span>
+                  {totalPrice >= FREE_SHIPPING_THRESHOLD ? (
+                    <span className="text-emerald-600">Free</span>
+                  ) : (
+                    <span>{formatBDT(SHIPPING_INSIDE_DHAKA)} - {formatBDT(SHIPPING_OUTSIDE_DHAKA)}</span>
+                  )}
                 </div>
+                {totalPrice < FREE_SHIPPING_THRESHOLD && (
+                  <p className="text-xs text-muted-foreground">
+                    Add {formatBDT(FREE_SHIPPING_THRESHOLD - totalPrice)} more for free shipping. Final cost depends on your location.
+                  </p>
+                )}
                 <div className="border-t border-border pt-3">
                   <div className="flex justify-between text-base font-bold text-foreground">
                     <span>Total</span>
-                    <span>${totalPrice.toFixed(2)}</span>
+                    <span>{formatBDT(totalPrice)} + shipping</span>
                   </div>
                 </div>
               </div>

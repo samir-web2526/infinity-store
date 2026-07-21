@@ -4,6 +4,7 @@ import { Star, ShoppingCart, Clock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { useAddToCart } from "@/hooks/useAddToCart";
+import { formatBDT } from "@/utils/currency";
 
 const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -145,11 +146,11 @@ export default function NewArrivalsProductCard({ product, index }) {
 
             <div className="mt-auto flex items-baseline gap-2">
               <span className="text-lg font-bold text-foreground">
-                ${hasDiscount ? discountedPrice : product.price?.toFixed(2)}
+                {formatBDT(hasDiscount ? discountedPrice : product.price)}
               </span>
               {hasDiscount && (
                 <span className="text-sm text-muted-foreground line-through">
-                  ${product.price?.toFixed(2)}
+                  {formatBDT(product.price)}
                 </span>
               )}
             </div>

@@ -8,6 +8,7 @@ import {
   BarChart3, Eye,
 } from "lucide-react";
 import { getAllOrders, updateOrderStatus } from "@/services/order.api";
+import { formatBDT } from "@/utils/currency";
 import { getUsers } from "@/services/user.api";
 import { getProducts } from "@/services/product.api";
 import { Button } from "@/components/ui/Button";
@@ -123,7 +124,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Revenue"
-          value={`$${totalRevenue.toFixed(2)}`}
+          value={formatBDT(totalRevenue)}
           icon={DollarSign}
           color="bg-emerald-100 text-emerald-600"
           delay={0}
@@ -227,7 +228,7 @@ export default function AdminDashboard() {
                     </td>
                     <td className="px-5 py-3 text-muted-foreground">{order.totalItems}</td>
                     <td className="px-5 py-3 font-medium text-foreground">
-                      ${order.totalPrice?.toFixed(2)}
+                      {formatBDT(order.totalPrice)}
                     </td>
                     <td className="px-5 py-3">
                       <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${cfg.color}`}>
