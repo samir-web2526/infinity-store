@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { Shield } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
   Card,
@@ -19,9 +18,6 @@ import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/images/logo.png";
 import { Helmet } from "react-helmet-async";
 
-const ADMIN_EMAIL = "admin@gmail.com";
-const ADMIN_PASSWORD = "123456";
-
 export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -31,7 +27,6 @@ export default function Login() {
     register,
     handleSubmit,
     setError,
-    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: { email: "", password: "" },
@@ -94,12 +89,6 @@ const handleGoogleLogin = async (credentialResponse) => {
   } finally {
     setLoading(false);
   }
-};
-
-const fillAdmin = () => {
-  setValue("email", ADMIN_EMAIL, { shouldValidate: true });
-  setValue("password", ADMIN_PASSWORD, { shouldValidate: true });
-  toast.success("Admin credentials filled");
 };
 
   return (
@@ -200,16 +189,6 @@ const fillAdmin = () => {
                 />
               </div>
             </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={fillAdmin}
-            >
-              <Shield className="size-4" />
-              Login as Admin
-            </Button>
 
             <Link
               to="/"

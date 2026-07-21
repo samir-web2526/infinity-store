@@ -19,7 +19,6 @@ export function useAddToCart() {
     try {
       await addToCartApi({ productId, quantity });
       toast.success("Added to cart");
-      navigate("/cart");
       try {
         const cart = await getCart();
         refetchCartCount(cart?.items?.length ?? cart?.cart?.items?.length ?? 0);

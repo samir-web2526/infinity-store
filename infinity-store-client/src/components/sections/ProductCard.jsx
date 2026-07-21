@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import { Star, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -36,6 +36,7 @@ function StockBar({ stock, maxStock }) {
 }
 
 export default function ProductCard({ product, index }) {
+  const navigate = useNavigate();
   const { addToCart } = useAddToCart();
   const { user } = useAuth();
   const hasDiscount = product.discountPercentage > 0;
@@ -146,7 +147,7 @@ export default function ProductCard({ product, index }) {
                 disabled={isOutOfStock}
                 onClick={(e) => {
                   e.preventDefault();
-                  addToCart(product._id);
+                  addToCart(product._id).then(() => navigate("/cart"));
                 }}
               >
                 <ShoppingCart className="size-4" data-icon="inline-start" />

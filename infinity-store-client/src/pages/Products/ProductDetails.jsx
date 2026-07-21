@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
@@ -33,6 +33,12 @@ export default function ProductDetails() {
   const navigate = useNavigate();
   const { addToCart } = useAddToCart();
   const { user } = useAuth();
+  const [addedToCart, setAddedToCart] = useState(false);
+
+  const handleAddToCart = async (productId) => {
+    await addToCart(productId);
+    setAddedToCart(true);
+  };
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
@@ -198,7 +204,7 @@ export default function ProductDetails() {
                         size="lg"
                         className="flex-1 rounded-lg"
                         disabled={product.stock === 0}
-                        onClick={() => addToCart(product._id)}
+                        onClick={() => handleAddToCart(product._id)}
                       >
                         <ShoppingCart className="size-4" data-icon="inline-start" />
                         {product.stock === 0 ? "Unavailable" : "Add to Cart"}
@@ -207,7 +213,8 @@ export default function ProductDetails() {
                         variant="outline"
                         size="lg"
                         className="rounded-lg"
-                        disabled={product.stock === 0}
+                        disabled={product.stock === 0 || !addedToCart}
+                        onClick={() => navigate("/checkout")}
                       >
                         {product.stock === 0 ? "Unavailable" : "Buy Now"}
                       </Button>
