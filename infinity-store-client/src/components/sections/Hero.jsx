@@ -102,7 +102,7 @@ export default function Hero() {
       <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-20 lg:px-8 lg:py-36">
         <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:gap-16">
 
-          <div className="flex-1 text-center lg:text-left">
+          <div className="flex-1 text-center lg:max-w-2xl lg:text-left">
             <motion.div
               custom={0}
               initial="hidden"
@@ -197,11 +197,12 @@ export default function Hero() {
             </motion.div>
           </div>
 
+          {products.length > 0 && product && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="relative w-full max-w-sm flex-shrink-0 lg:w-auto"
+            className="relative w-full max-w-sm flex-shrink-0 sm:w-72 lg:w-[480px]"
           >
             <div className="relative mx-auto aspect-square overflow-hidden rounded-3xl bg-gradient-to-br from-muted to-muted/50 shadow-2xl">
               {products.length > 0 && product ? (
@@ -293,7 +294,7 @@ export default function Hero() {
               <div className="absolute -bottom-6 -left-6 size-40 rounded-full bg-primary/5 blur-3xl" />
             </div>
 
-            <div className="absolute -bottom-3 left-2 rounded-2xl border border-border bg-card p-2 shadow-lg sm:-bottom-4 sm:-left-4 sm:p-3">
+            <div className="absolute -bottom-3 left-2 rounded-2xl border border-border bg-card p-2 shadow-lg sm:-bottom-4 sm:-left-4 sm:p-3 hidden sm:block">
               <div className="flex items-center gap-2">
                 <div className="flex size-7 items-center justify-center rounded-full bg-green-500/10 sm:size-8">
                   <svg className="size-3.5 text-green-600 sm:size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -307,7 +308,7 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="absolute -right-2 -top-2 rounded-2xl border border-border bg-card p-2 shadow-lg sm:-right-3 sm:-top-3 sm:p-3">
+            <div className="absolute -right-2 -top-2 rounded-2xl border border-border bg-card p-2 shadow-lg sm:-right-3 sm:-top-3 sm:p-3 hidden sm:block">
               <div className="flex items-center gap-2">
                 <div className="flex size-7 items-center justify-center rounded-full bg-amber-500/10 sm:size-8">
                   <svg className="size-3.5 text-amber-500 sm:size-4" fill="currentColor" viewBox="0 0 24 24">
@@ -321,6 +322,7 @@ export default function Hero() {
               </div>
             </div>
           </motion.div>
+          )}
         </div>
       </div>
     </section>
