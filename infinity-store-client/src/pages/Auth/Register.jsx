@@ -72,16 +72,16 @@ export default function Register() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 px-4 py-8">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25">
             <span className="text-xl font-bold text-white">IS</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900">Infinity Store</h1>
+          <h1 className="text-2xl font-bold text-foreground">Infinity Store</h1>
         </div>
 
-        <Card className="border-0 shadow-xl shadow-slate-200/50">
+        <Card className="border-0 shadow-xl">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-2xl font-bold">Create account</CardTitle>
             <CardDescription>
@@ -92,7 +92,7 @@ export default function Register() {
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {serverError && (
-                <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600 ring-1 ring-red-200">
+                <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600 ring-1 ring-red-200 dark:bg-red-950 dark:text-red-400 dark:ring-red-800">
                   {serverError}
                 </div>
               )}
@@ -198,19 +198,19 @@ export default function Register() {
             </form>
 
             <div className="my-6 flex items-center gap-3">
-              <div className="h-px flex-1 bg-slate-200" />
-              <span className="text-xs text-slate-400">OR</span>
-              <div className="h-px flex-1 bg-slate-200" />
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-xs text-muted-foreground">OR</span>
+              <div className="h-px flex-1 bg-border" />
             </div>
 
             <Link
               to="/"
-              className="flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+              className="flex w-full items-center justify-center rounded-lg border border-border bg-background px-2.5 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
             >
               ← Back to Home
             </Link>
 
-            <p className="mt-6 text-center text-sm text-slate-600">
+            <p className="mt-6 text-center text-sm text-muted-foreground">
               Already have an account?{" "}
               <Link
                 to="/login"

@@ -27,6 +27,12 @@ import AdminOrders from "@/pages/Dashboard/AdminOrders";
 import AdminOrderDetails from "@/pages/Dashboard/AdminOrderDetails";
 import AdminUsers from "@/pages/Dashboard/AdminUsers";
 
+import Terms from "@/pages/Static/Terms";
+import Privacy from "@/pages/Static/Privacy";
+import ReturnPolicy from "@/pages/Static/ReturnPolicy";
+import DeliveryRules from "@/pages/Static/DeliveryRules";
+import Contact from "@/pages/Static/Contact";
+
 const router = createBrowserRouter([
   // Public Routes
   {
@@ -46,6 +52,26 @@ const router = createBrowserRouter([
             element: <ProductDetails />,
           },
         ],
+      },
+      {
+        path: "terms",
+        element: <Terms />,
+      },
+      {
+        path: "privacy",
+        element: <Privacy />,
+      },
+      {
+        path: "return-policy",
+        element: <ReturnPolicy />,
+      },
+      {
+        path: "delivery-rules",
+        element: <DeliveryRules />,
+      },
+      {
+        path: "contact",
+        element: <Contact />,
       },
     ],
   },

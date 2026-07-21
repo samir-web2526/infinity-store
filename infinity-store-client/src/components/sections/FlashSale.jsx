@@ -54,7 +54,7 @@ export default function FlashSale() {
   }, [data]);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-red-50/80 via-background to-background py-16 sm:py-20 dark:from-red-950/20">
+    <section id="flash-sale" className="relative overflow-hidden bg-gradient-to-b from-red-50/80 via-background to-background py-16 sm:py-20 dark:from-red-950/20">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,oklch(0.6_0.2_25/8%),transparent)]" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

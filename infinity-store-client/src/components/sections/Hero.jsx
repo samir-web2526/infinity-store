@@ -67,7 +67,7 @@ export default function Hero() {
   const product = products[current];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-muted">
+    <section id="hero" className="relative overflow-hidden bg-gradient-to-br from-background via-background to-muted">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.55_0.15_270/10%),transparent)]" />
 
       <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">

@@ -59,7 +59,7 @@ export default function FeaturedProducts() {
   }, [data]);
 
   return (
-    <section className="bg-background py-16 sm:py-20">
+    <section id="featured-products" className="bg-background py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}

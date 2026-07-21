@@ -6,7 +6,7 @@ import NewArrivals from "@/components/sections/NewArrivals";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import CustomerReviews from "@/components/sections/CustomerReviews";
 import FAQ from "@/components/sections/FAQ";
-import Footer from "@/components/sections/Footer";
+import Footer from "@/pages/sharedPages/Footer";
 
 export default function Home() {
   return (
