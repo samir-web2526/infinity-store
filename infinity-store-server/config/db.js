@@ -16,10 +16,12 @@ const client = new MongoClient(uri, {
 let db;
 
 async function connectDB() {
+    if (db) return db;
     await client.connect();
     db = client.db("infinityStore");
 
-    console.log("✅ MongoDB Connected");
+    console.log("MongoDB Connected");
+    return db;
 }
 
 function getDB() {

@@ -27,28 +27,41 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+if (process.env.VERCEL) {
+    app.use(async (req, res, next) => {
+        try {
+            await connectDB();
+            next();
+        } catch (error) {
+            res.status(500).json({ message: "Database connection failed" });
+        }
+    });
+}
+
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
+
+app.get("/", (req, res) => {
+    res.send("Infinity Store Server is Running...");
+});
+
+if (process.env.VERCEL) {
+    module.exports = app;
+} else {
+    startServer();
+}
+
 async function startServer() {
     try {
         await connectDB();
-
-        app.use("/api/auth", authRoutes);
-        app.use("/api/users", userRoutes);
-        app.use("/api/products", productRoutes);
-        app.use("/api/categories", categoryRoutes);
-        app.use("/api/cart", cartRoutes);
-        app.use("/api/orders", orderRoutes);
-
-        app.get("/", (req, res) => {
-            res.send("Infinity Store Server is Running...");
-        });
-
         app.listen(port, () => {
             console.log(`Server running on port ${port}`);
         });
-
     } catch (error) {
         console.log(error);
     }
 }
-
-startServer();
