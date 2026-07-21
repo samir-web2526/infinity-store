@@ -10,7 +10,7 @@ import { ArrowLeft, Save, Trash2 } from "lucide-react";
 import { getProductById, updateProduct, deleteProduct } from "@/services/product.api";
 import { getCategories } from "@/services/category.api";
 import { Button } from "@/components/ui/Button";
-import Input from "@/components/ui/input";
+import Input from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const updateSchema = z.object({

@@ -5,6 +5,7 @@ import { useAuth } from "../../hooks/useAuth";
 import useCart from "@/hooks/useCart";
 import useTheme from "@/hooks/useTheme";
 import { getCart } from "../../services/cart.api";
+import logo from "@/assets/images/logo.png";
 
 const Navbar = () => {
     const { user, logout, loading } = useAuth();
@@ -35,9 +36,9 @@ const Navbar = () => {
 
                 <Link
                     to="/"
-                    className="text-2xl font-bold text-blue-600"
+                    className="flex items-center"
                 >
-                    Infinity Store
+                    <img src={logo} alt="Infinity Store" className="h-10 w-auto dark:invert" />
                 </Link>
 
                 <nav className="hidden items-center gap-8 md:flex">
@@ -101,7 +102,7 @@ const Navbar = () => {
 
                             <Link
                                 to="/register"
-                                className="rounded-md bg-blue-600 px-4 py-2 text-white"
+                                className="rounded-md bg-amber-600 px-4 py-2 text-white"
                             >
                                 Register
                             </Link>
@@ -115,7 +116,7 @@ const Navbar = () => {
                             <div
                                 tabIndex={0}
                                 role="button"
-                                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-blue-600 font-semibold text-white"
+                                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-amber-600 font-semibold text-white"
                             >
                                 {user?.name?.charAt(0).toUpperCase()}
                             </div>

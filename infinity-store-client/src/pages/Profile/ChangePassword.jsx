@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { ArrowLeft, Lock, Save } from "lucide-react";
 import { changePassword } from "@/services/user.api";
 import { Button } from "@/components/ui/Button";
-import Input from "@/components/ui/input";
+import Input from "@/components/ui/Input";
 
 const passwordSchema = z.object({
   oldPassword: z.string().min(1, "Current password is required"),

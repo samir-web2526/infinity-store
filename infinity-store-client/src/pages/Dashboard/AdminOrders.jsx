@@ -34,11 +34,11 @@ export default function AdminOrders() {
     queryKey: ["admin-orders"],
     queryFn: async () => {
       const res = await getAllOrders();
-      return res.orders ?? res;
+      return Array.isArray(res) ? res : res.orders ?? [];
     },
   });
 
-  const orders = data ?? [];
+  const orders = Array.isArray(data) ? data : [];
 
   const statusMutation = useMutation({
     mutationFn: ({ id, orderStatus }) => updateOrderStatus(id, orderStatus),

@@ -103,13 +103,13 @@ export default function Cart() {
   }
 
   return (
-    <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <div className="mx-auto max-w-4xl">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
             Cart ({totalItems} {totalItems === 1 ? "item" : "items"})
           </h1>
-          <Button variant="ghost" size="sm" onClick={() => navigate("/products")}>
+          <Button variant="ghost" size="sm" onClick={() => navigate("/products")} className="self-start">
             <ArrowLeft className="size-4" data-icon="inline-start" />
             Continue Shopping
           </Button>
@@ -132,13 +132,13 @@ export default function Cart() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className={`flex gap-4 rounded-xl border bg-card p-4 shadow-sm ${
+                className={`flex gap-3 rounded-xl border bg-card p-3 shadow-sm sm:gap-4 sm:p-4 ${
                   !ok ? "border-amber-300 dark:border-amber-700" : "border-border"
                 }`}
               >
                 <Link
                   to={`/products/${item.productId}`}
-                  className="size-24 shrink-0 overflow-hidden rounded-lg bg-muted"
+                  className="size-20 shrink-0 overflow-hidden rounded-lg bg-muted sm:size-24"
                 >
                   <img
                     src={item.thumbnail}
@@ -147,8 +147,8 @@ export default function Cart() {
                   />
                 </Link>
 
-                <div className="flex flex-1 flex-col justify-between">
-                  <div>
+                <div className="flex min-w-0 flex-1 flex-col justify-between">
+                  <div className="min-w-0">
                     <Link
                       to={`/products/${item.productId}`}
                       className="text-sm font-semibold text-foreground hover:underline"
@@ -162,15 +162,15 @@ export default function Cart() {
 
                   {!ok && (
                     <div className="mt-1.5 flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
-                      <AlertTriangle className="size-3" />
+                      <AlertTriangle className="size-3 shrink-0" />
                       <span>{message}</span>
                     </div>
                   )}
 
-                  <div className="mt-2 flex items-center justify-between">
+                  <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <button
-                        className="flex size-7 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:bg-muted"
+                        className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:bg-muted"
                         disabled={updateMutation.isPending || removeMutation.isPending}
                         onClick={() => {
                           if (item.quantity <= 1) {
@@ -189,7 +189,7 @@ export default function Cart() {
                         {item.quantity}
                       </span>
                       <button
-                        className="flex size-7 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:bg-muted"
+                        className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:bg-muted"
                         disabled={item.quantity >= item.stock || updateMutation.isPending}
                         onClick={() =>
                           updateMutation.mutate({
@@ -200,17 +200,17 @@ export default function Cart() {
                       >
                         <Plus className="size-3" />
                       </button>
-                      <span className="ml-1 text-xs text-muted-foreground">
-                        / {item.stock} available
+                      <span className="text-xs text-muted-foreground">
+                        /{item.stock}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-bold text-foreground">
+                    <div className="flex items-center gap-2">
+                      <span className="shrink-0 text-sm font-bold text-foreground">
                         {formatBDT(item.subtotal ?? item.price * item.quantity)}
                       </span>
                       <button
-                        className="flex size-7 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                        className="flex size-7 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
                         disabled={removeMutation.isPending}
                         onClick={() => removeMutation.mutate(item.productId)}
                       >
@@ -224,19 +224,19 @@ export default function Cart() {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="sticky top-24 rounded-xl border border-border bg-card p-6 shadow-sm">
+            <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:sticky sm:top-24 sm:p-6">
               <h2 className="mb-4 text-lg font-semibold text-foreground">Order Summary</h2>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between text-muted-foreground">
                   <span>Subtotal ({totalItems} items)</span>
-                  <span>{formatBDT(totalPrice)}</span>
+                  <span className="shrink-0">{formatBDT(totalPrice)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Shipping</span>
                   {totalPrice >= FREE_SHIPPING_THRESHOLD ? (
                     <span className="text-emerald-600">Free</span>
                   ) : (
-                    <span>{formatBDT(SHIPPING_INSIDE_DHAKA)} - {formatBDT(SHIPPING_OUTSIDE_DHAKA)}</span>
+                    <span className="shrink-0">{formatBDT(SHIPPING_INSIDE_DHAKA)} - {formatBDT(SHIPPING_OUTSIDE_DHAKA)}</span>
                   )}
                 </div>
                 {totalPrice < FREE_SHIPPING_THRESHOLD && (
@@ -247,7 +247,7 @@ export default function Cart() {
                 <div className="border-t border-border pt-3">
                   <div className="flex justify-between text-base font-bold text-foreground">
                     <span>Total</span>
-                    <span>{formatBDT(totalPrice)} + shipping</span>
+                    <span className="shrink-0">{formatBDT(totalPrice)} + shipping</span>
                   </div>
                 </div>
               </div>
@@ -257,7 +257,7 @@ export default function Cart() {
                 disabled={hasStockIssues}
                 onClick={() => navigate("/checkout")}
               >
-                {hasStockIssues ? "Fix Stock Issues to Checkout" : "Proceed to Checkout"}
+                {hasStockIssues ? "Fix Stock Issues" : "Proceed to Checkout"}
               </Button>
             </div>
           </div>

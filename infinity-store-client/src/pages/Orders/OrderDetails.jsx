@@ -120,13 +120,13 @@ export default function OrderDetails() {
           </div>
 
           {order.orderStatus !== "cancelled" && (
-            <div className="mb-8 rounded-xl border border-border bg-card p-6 shadow-sm">
+            <div className="mb-8 rounded-xl border border-border bg-card p-4 shadow-sm sm:p-6">
               <div className="flex items-center justify-between">
                 {STATUS_STEPS.map((step, i) => (
                   <div key={step} className="flex flex-1 items-center">
                     <div className="flex flex-col items-center">
                       <div
-                        className={`flex size-8 items-center justify-center rounded-full text-xs font-bold ${
+                        className={`flex size-7 items-center justify-center rounded-full text-[11px] font-bold sm:size-8 sm:text-xs ${
                           i <= currentStep
                             ? "bg-primary text-primary-foreground"
                             : "bg-muted text-muted-foreground"
@@ -134,13 +134,13 @@ export default function OrderDetails() {
                       >
                         {i + 1}
                       </div>
-                      <span className="mt-1.5 text-[11px] capitalize text-muted-foreground">
+                      <span className="mt-1 hidden text-[9px] capitalize text-muted-foreground sm:block sm:text-[11px]">
                         {step}
                       </span>
                     </div>
                     {i < STATUS_STEPS.length - 1 && (
                       <div
-                        className={`mx-1 h-0.5 flex-1 ${
+                        className={`mx-0.5 h-0.5 flex-1 sm:mx-1 ${
                           i < currentStep ? "bg-primary" : "bg-muted"
                         }`}
                       />
@@ -159,18 +159,18 @@ export default function OrderDetails() {
 
           <div className="grid gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
-              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+              <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:p-6">
                 <div className="mb-4 flex items-center gap-2">
                   <Package className="size-4 text-muted-foreground" />
                   <h2 className="text-sm font-semibold text-foreground">Items ({order.totalItems})</h2>
                 </div>
                 <div className="divide-y divide-border">
                   {order.items?.map((item) => (
-                    <div key={item.productId} className="flex gap-4 py-3 first:pt-0 last:pb-0">
+                    <div key={item.productId} className="flex gap-3 py-3 first:pt-0 last:pb-0 sm:gap-4">
                       <img
                         src={item.thumbnail}
                         alt={item.title}
-                        className="size-16 shrink-0 rounded-lg object-cover"
+                        className="size-14 shrink-0 rounded-lg object-cover sm:size-16"
                       />
                       <div className="min-w-0 flex-1">
                         <Link
@@ -180,10 +180,10 @@ export default function OrderDetails() {
                           {item.title}
                         </Link>
                         <p className="mt-0.5 text-xs text-muted-foreground">
-                          Qty: {item.quantity} &times; {formatBDT(item.price)}
+                          Qty: {item.quantity} × {formatBDT(item.price)}
                         </p>
                       </div>
-                      <span className="text-sm font-medium text-foreground">
+                      <span className="shrink-0 text-sm font-medium text-foreground">
                         {formatBDT(item.subtotal)}
                       </span>
                     </div>
@@ -192,8 +192,8 @@ export default function OrderDetails() {
               </div>
             </div>
 
-            <div className="space-y-6 lg:col-span-1">
-              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+            <div className="space-y-4 sm:space-y-6 lg:col-span-1">
+              <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:p-6">
                 <h2 className="mb-3 text-sm font-semibold text-foreground">Order Total</h2>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between text-muted-foreground">
@@ -219,7 +219,7 @@ export default function OrderDetails() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+              <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:p-6">
                 <div className="mb-3 flex items-center gap-2">
                   <MapPin className="size-4 text-muted-foreground" />
                   <h2 className="text-sm font-semibold text-foreground">Shipping Address</h2>
@@ -232,7 +232,7 @@ export default function OrderDetails() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+              <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:p-6">
                 <div className="mb-3 flex items-center gap-2">
                   <CreditCard className="size-4 text-muted-foreground" />
                   <h2 className="text-sm font-semibold text-foreground">Payment</h2>

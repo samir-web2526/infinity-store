@@ -2,11 +2,11 @@ import { useState, useMemo } from "react";
 import { useSearchParams, Outlet } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Search, SlidersHorizontal, X} from "lucide-react";
+import { Search, SlidersHorizontal, X, Sliders} from "lucide-react";
 import { getProducts } from "@/services/product.api";
 import { getCategories } from "@/services/category.api";
 import { Button } from "@/components/ui/Button";
-import Input from "@/components/ui/input";
+import Input from "@/components/ui/Input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProductCard from "@/components/sections/ProductCard";
@@ -42,6 +42,7 @@ export default function Products() {
 
   const [sort, setSort] = useState("newest");
   const [page, setPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
   const limit = 12;
 
   const updateCategory = (slug) => {
@@ -220,10 +221,31 @@ export default function Products() {
         </div>
       </div>
 
-      <div className="flex min-h-0 flex-1 px-4 pb-8 sm:px-6 lg:px-8">
-        <div className="mx-auto flex w-full max-w-7xl gap-8">
-          <aside className="w-full shrink-0 lg:w-56">
+      <div className="px-4 pb-8 sm:px-6 lg:h-0 lg:flex-1 lg:overflow-y-auto lg:px-8">
+        <div className="mx-auto max-w-7xl lg:flex lg:gap-8">
+
+          {showFilters && (
+            <div
+              className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+              onClick={() => setShowFilters(false)}
+            />
+          )}
+
+          <aside
+            className={`fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r border-border bg-background p-4 transition-transform duration-200 lg:static lg:translate-x-0 lg:w-56 lg:border-0 lg:p-0 lg:py-1 lg:overflow-y-visible ${
+              showFilters ? "translate-x-0" : "-translate-x-full"
+            }`}
+          >
             <div className="space-y-6 py-1">
+              <div className="flex items-center justify-between lg:hidden">
+                <span className="text-sm font-semibold text-foreground">Filters</span>
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="flex size-7 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -254,12 +276,12 @@ export default function Products() {
                       );
 
                     return (
-                      <div key={parent.slug} className="group/parent relative">
+                      <div key={parent.slug} className="group/parent">
                         <button
-                          onClick={() =>
-                            handleCategoryChange(parent.slug)
-                          }
-                          className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+                          onClick={() => {
+                            handleCategoryChange(selectedCategory === parent.slug ? "" : parent.slug);
+                            if (!parent.children?.length) setShowFilters(false);
+                          }}className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition-colors ${
                             isActive
                               ? "bg-primary text-primary-foreground"
                               : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -268,9 +290,7 @@ export default function Products() {
                           {parent.name}
                           {parent.children?.length > 0 && (
                             <svg
-                              className={`size-3.5 transition-transform group-hover/parent:rotate-90 ${
-                                isActive ? "text-primary-foreground" : "text-muted-foreground"
-                              }`}
+                              className={`size-3.5 transition-transform lg:group-hover/parent:rotate-90 ${isActive ? "rotate-90 lg:rotate-0 text-primary-foreground" : "rotate-90 lg:rotate-0 text-muted-foreground"}`}
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -282,7 +302,7 @@ export default function Products() {
                         </button>
 
                         {parent.children?.length > 0 && (
-                          <div className="invisible absolute left-0 top-full z-20 mt-0.5 w-full rounded-xl border border-border bg-card py-1.5 shadow-lg transition-all duration-150 group-hover/parent:visible group-hover/parent:opacity-100">
+                          <div className="invisible absolute left-0 top-full z-20 mt-0.5 w-full rounded-xl border border-border bg-card py-1.5 shadow-lg transition-all duration-150 group-hover/parent:visible group-hover/parent:opacity-100 lg:block">
                             {parent.children.map((child) => {
                               const childActive =
                                 selectedCategory === child.slug ||
@@ -291,10 +311,39 @@ export default function Products() {
                               return (
                                 <button
                                   key={child.slug}
-                                  onClick={() =>
-                                    handleCategoryChange(child.slug)
-                                  }
+                                  onClick={() => {
+                                    handleCategoryChange(child.slug);
+                                    setShowFilters(false);
+                                  }}
                                   className={`flex w-full items-center gap-2 px-4 py-1.5 text-left text-sm transition-colors ${
+                                    childActive
+                                      ? "bg-primary/10 font-medium text-primary"
+                                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                  }`}
+                                >
+                                  <span className="size-1 rounded-full bg-current opacity-40" />
+                                  {child.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {parent.children?.length > 0 && isActive && (
+                          <div className="pl-4 lg:hidden">
+                            {parent.children.map((child) => {
+                              const childActive =
+                                selectedCategory === child.slug ||
+                                child.categories?.includes(selectedCategory);
+
+                              return (
+                                <button
+                                  key={child.slug}
+                                  onClick={() => {
+                                    handleCategoryChange(child.slug);
+                                    setShowFilters(false);
+                                  }}
+                                  className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm transition-colors ${
                                     childActive
                                       ? "bg-primary/10 font-medium text-primary"
                                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -318,7 +367,10 @@ export default function Products() {
                   variant="ghost"
                   size="sm"
                   className="w-full"
-                  onClick={clearFilters}
+                  onClick={() => {
+                    clearFilters();
+                    setShowFilters(false);
+                  }}
                 >
                   <X className="size-4" data-icon="inline-start" />
                   Clear Filters
@@ -327,7 +379,7 @@ export default function Products() {
             </div>
           </aside>
 
-          <div className="flex min-h-0 flex-1 flex-col">
+          <div className="min-w-0 lg:flex-1">
             <div className="shrink-0 py-1">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
@@ -345,7 +397,16 @@ export default function Products() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="size-4 text-muted-foreground" />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="lg:hidden"
+                    onClick={() => setShowFilters(true)}
+                  >
+                    <SlidersHorizontal className="size-4" />
+                    Filters
+                  </Button>
+                  <SlidersHorizontal className="size-4 text-muted-foreground hidden lg:block" />
                   <select
                     value={sort}
                     onChange={(e) => {
@@ -364,7 +425,7 @@ export default function Products() {
               </div>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+            <div className="pt-4">
               {isLoading ? (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {Array.from({ length: 12 }).map((_, i) => (

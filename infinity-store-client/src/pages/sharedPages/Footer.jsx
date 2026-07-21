@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router";
 import { Phone, MapPin } from "lucide-react";
+import logo from "@/assets/images/logo.png";
 import {
   FaFacebookF,
   FaInstagram,
@@ -51,9 +52,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-5">
             <Link to="/" className="inline-block">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-lg font-bold text-primary-foreground">
-                IS
-              </div>
+              <img src={logo} alt="Infinity Store" className="h-12 w-auto dark:invert" />
             </Link>
             <p className="text-sm leading-relaxed text-muted-foreground">
               Infinity Store — Your premium destination for quality products at

@@ -60,7 +60,7 @@ export default function ReviewCard({ review, index }) {
       <div className="group flex h-full flex-col rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
         <div className="mb-4 flex items-center gap-3">
           <Avatar size="lg">
-            <AvatarFallback className="bg-linear-to-br from-blue-500 to-indigo-500 text-sm font-semibold text-white">
+            <AvatarFallback className="bg-linear-to-br from-amber-500 to-orange-500 text-sm font-semibold text-white">
               {getInitials(review.reviewerName)}
             </AvatarFallback>
           </Avatar>

@@ -10,7 +10,7 @@ import { User, Phone, MapPin, Shield, Save, ArrowLeft, Lock } from "lucide-react
 import { updateProfile } from "@/services/user.api";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/Button";
-import Input from "@/components/ui/input";
+import Input from "@/components/ui/Input";
 import { Badge } from "@/components/ui/badge";
 
 const profileSchema = z.object({

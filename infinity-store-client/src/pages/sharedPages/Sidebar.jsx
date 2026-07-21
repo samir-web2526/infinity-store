@@ -1,6 +1,7 @@
 import { NavLink } from "react-router";
+import logo from "@/assets/images/logo.png";
 
-export default function Sidebar() {
+export default function Sidebar({ open, onClose }) {
   const menuItems = [
     {
       name: "Dashboard",
@@ -33,29 +34,41 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 border-r bg-card p-5">
-      <h2 className="mb-6 text-2xl font-bold text-blue-600">
-        Infinity Store
-      </h2>
+    <>
+      {open && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={onClose}
+        />
+      )}
 
-      <nav className="space-y-2">
-        {menuItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            end={item.path === "/dashboard"}
-            className={({ isActive }) =>
-              `block rounded-md px-4 py-2 transition ${
-                isActive
-                  ? "bg-blue-600 text-white"
-                  : "text-foreground hover:bg-muted"
-              }`
-            }
-          >
-            {item.name}
-          </NavLink>
-        ))}
-      </nav>
-    </aside>
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-64 border-r bg-card p-5 transition-transform duration-200 lg:static lg:translate-x-0 ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <img src={logo} alt="Infinity Store" className="mb-6 h-10 w-auto dark:invert" />
+
+        <nav className="space-y-2">
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              end={item.path === "/dashboard"}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `block rounded-md px-4 py-2 transition ${
+                  isActive
+                    ? "bg-primary text-primary-foreground font-semibold"
+                    : "text-foreground hover:bg-muted"
+                }`
+              }
+            >
+              {item.name}
+            </NavLink>
+          ))}
+        </nav>
+      </aside>
+    </>
   );
 }

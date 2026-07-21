@@ -13,10 +13,10 @@ import {
 } from "lucide-react";
 
 const ICON_MAP = {
-  electronics: { icon: Laptop, color: "bg-blue-100 text-blue-600" },
+  electronics: { icon: Laptop, color: "bg-amber-100 text-amber-600" },
   beauty: { icon: Sparkles, color: "bg-pink-100 text-pink-600" },
   accessories: { icon: Gem, color: "bg-yellow-100 text-yellow-600" },
-  fashion: { icon: Shirt, color: "bg-indigo-100 text-indigo-600" },
+  fashion: { icon: Shirt, color: "bg-orange-100 text-orange-600" },
   home: { icon: Home, color: "bg-orange-100 text-orange-600" },
   vehicles: { icon: Car, color: "bg-slate-100 text-slate-600" },
   sports: { icon: Dumbbell, color: "bg-lime-100 text-lime-600" },

@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { Button } from "@/components/ui/button";
+import { Shield } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import {
   Card,
   CardContent,
@@ -10,11 +11,15 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import Input from "@/components/ui/input";
+import Input from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
 import { loginUser, googleLogin } from "@/services/auth.api";
 import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "@/hooks/useAuth";
+import logo from "@/assets/images/logo.png";
+
+const ADMIN_EMAIL = "admin@gmail.com";
+const ADMIN_PASSWORD = "123456";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -25,6 +30,7 @@ export default function Login() {
     register,
     handleSubmit,
     setError,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: { email: "", password: "" },
@@ -89,13 +95,17 @@ const handleGoogleLogin = async (credentialResponse) => {
   }
 };
 
+const fillAdmin = () => {
+  setValue("email", ADMIN_EMAIL, { shouldValidate: true });
+  setValue("password", ADMIN_PASSWORD, { shouldValidate: true });
+  toast.success("Admin credentials filled");
+};
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25">
-            <span className="text-xl font-bold text-white">IS</span>
-          </div>
+          <img src={logo} alt="Infinity Store" className="mx-auto mb-4 h-14 w-auto dark:invert" />
           <h1 className="text-2xl font-bold text-foreground">Infinity Store</h1>
         </div>
 
@@ -134,7 +144,7 @@ const handleGoogleLogin = async (credentialResponse) => {
                   <Label htmlFor="password">Password</Label>
                   <Link
                     to="/forgot-password"
-                    className="text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                    className="text-xs font-medium text-amber-600 hover:text-amber-700 hover:underline"
                   >
                     Forgot password?
                   </Link>
@@ -155,7 +165,7 @@ const handleGoogleLogin = async (credentialResponse) => {
 
               <Button
                 type="submit"
-                className="w-full bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700"
+                className="w-full bg-linear-to-r from-amber-600 to-orange-600 text-white hover:from-amber-700 hover:to-orange-700"
                 size="lg"
                 disabled={loading}
               >
@@ -177,15 +187,27 @@ const handleGoogleLogin = async (credentialResponse) => {
             </div>
 
             <div className="mb-6 flex justify-center">
-  <GoogleLogin
-    onSuccess={handleGoogleLogin}
-    onError={() => toast.error("Google Login Failed")}
-    theme="outline"
-    shape="rectangular"
-    text="signin_with"
-    width="350"
-  />
-</div>
+              <div className="w-full">
+                <GoogleLogin
+                  onSuccess={handleGoogleLogin}
+                  onError={() => toast.error("Google Login Failed")}
+                  theme="outline"
+                  shape="rectangular"
+                  text="signin_with"
+                  width="100%"
+                />
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={fillAdmin}
+            >
+              <Shield className="size-4" />
+              Login as Admin
+            </Button>
 
             <Link
               to="/"
@@ -198,7 +220,7 @@ const handleGoogleLogin = async (credentialResponse) => {
               Don&apos;t have an account?{" "}
               <Link
                 to="/register"
-                className="font-semibold text-blue-600 hover:text-blue-700 hover:underline"
+                className="font-semibold text-amber-600 hover:text-amber-700 hover:underline"
               >
                 Create one
               </Link>

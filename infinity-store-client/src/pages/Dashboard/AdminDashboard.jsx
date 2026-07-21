@@ -132,7 +132,7 @@ export default function AdminDashboard() {
           title="Total Orders"
           value={ordersData?.totalOrders ?? orders.length}
           icon={ShoppingCart}
-          color="bg-blue-100 text-blue-600"
+          color="bg-amber-100 text-amber-600"
           delay={0.05}
           loading={ordersLoading}
         />

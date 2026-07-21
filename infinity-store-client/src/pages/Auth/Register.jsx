@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
   Card,
   CardContent,
@@ -10,9 +10,10 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import Input from "@/components/ui/input";
+import Input from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
 import { registerUser } from "@/services/auth.api";
+import logo from "@/assets/images/logo.png";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -75,9 +76,7 @@ export default function Register() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25">
-            <span className="text-xl font-bold text-white">IS</span>
-          </div>
+          <img src={logo} alt="Infinity Store" className="mx-auto mb-4 h-14 w-auto dark:invert" />
           <h1 className="text-2xl font-bold text-foreground">Infinity Store</h1>
         </div>
 
@@ -177,7 +176,7 @@ export default function Register() {
 
               <Button
                 type="submit"
-                className="w-full bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700"
+                className="w-full bg-linear-to-r from-amber-600 to-orange-600 text-white hover:from-amber-700 hover:to-orange-700"
                 size="lg"
                 disabled={loading}
               >
@@ -209,7 +208,7 @@ export default function Register() {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="font-semibold text-blue-600 hover:text-blue-700 hover:underline"
+                className="font-semibold text-amber-600 hover:text-amber-700 hover:underline"
               >
                 Sign in
               </Link>

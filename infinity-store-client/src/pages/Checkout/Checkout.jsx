@@ -10,7 +10,7 @@ import { getCart } from "@/services/cart.api";
 import { createOrder } from "@/services/order.api";
 import useCart from "@/hooks/useCart";
 import { Button } from "@/components/ui/Button";
-import Input from "@/components/ui/input";
+import Input from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatBDT } from "@/utils/currency";
 

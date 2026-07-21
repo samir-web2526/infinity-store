@@ -5,7 +5,7 @@ export default function MainLayout() {
     <div className="flex h-screen flex-col overflow-hidden bg-slate-50">
       <Navbar />
 
-      <main className="min-h-0 flex-1 overflow-hidden">
+      <main className="min-h-0 flex-1 overflow-y-auto lg:overflow-hidden">
         <Outlet />
       </main>
     </div>

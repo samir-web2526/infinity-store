@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Star, ShoppingCart, Truck, Shield, RotateCcw } from "lucide-react";
 import { getProductById } from "@/services/product.api";
 import { useAddToCart } from "@/hooks/useAddToCart";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -30,6 +31,7 @@ export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useAddToCart();
+  const { user } = useAuth();
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
@@ -188,25 +190,27 @@ export default function ProductDetails() {
                     </div>
                   )}
 
-                  <div className="mt-1 flex flex-col gap-2 sm:flex-row">
-                    <Button
-                      size="lg"
-                      className="flex-1 rounded-lg"
-                      disabled={product.stock === 0}
-                      onClick={() => addToCart(product._id)}
-                    >
-                      <ShoppingCart className="size-4" data-icon="inline-start" />
-                      {product.stock === 0 ? "Unavailable" : "Add to Cart"}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="rounded-lg"
-                      disabled={product.stock === 0}
-                    >
-                      {product.stock === 0 ? "Unavailable" : "Buy Now"}
-                    </Button>
-                  </div>
+                  {user?.role !== "admin" && (
+                    <div className="mt-1 flex flex-col gap-2 sm:flex-row">
+                      <Button
+                        size="lg"
+                        className="flex-1 rounded-lg"
+                        disabled={product.stock === 0}
+                        onClick={() => addToCart(product._id)}
+                      >
+                        <ShoppingCart className="size-4" data-icon="inline-start" />
+                        {product.stock === 0 ? "Unavailable" : "Add to Cart"}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="rounded-lg"
+                        disabled={product.stock === 0}
+                      >
+                        {product.stock === 0 ? "Unavailable" : "Buy Now"}
+                      </Button>
+                    </div>
+                  )}
 
                   <div className="mt-2 grid grid-cols-3 gap-3">
                     <div className="flex flex-col items-center gap-1 rounded-lg border border-border p-2.5 text-center">

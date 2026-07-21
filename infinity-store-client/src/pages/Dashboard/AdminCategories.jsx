@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { Plus, Trash2, X, FolderTree, ChevronRight, Pencil, Save } from "lucide-react";
 import { getCategories, createCategory, updateCategory, deleteCategory } from "@/services/category.api";
 import { Button } from "@/components/ui/Button";
-import Input from "@/components/ui/input";
+import Input from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const createCategorySchema = z.object({
@@ -183,11 +183,11 @@ export default function AdminCategories() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
           Categories ({categories.length})
         </h1>
-        <Button onClick={() => setShowForm(true)}>
+        <Button onClick={() => setShowForm(true)} className="self-start">
           <Plus className="size-4" data-icon="inline-start" />
           Add Category
         </Button>
@@ -341,71 +341,72 @@ export default function AdminCategories() {
                 transition={{ delay: i * 0.03 }}
                 className="rounded-xl border border-border bg-card shadow-sm"
               >
-                <div className="flex items-center justify-between px-5 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <FolderTree className="size-4" />
+                <div className="px-4 py-4 sm:px-5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-3">
+                      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <FolderTree className="size-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-medium text-foreground">{cat.name}</p>
+                        <p className="text-xs text-muted-foreground">/{cat.slug}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-foreground">{cat.name}</p>
-                      <p className="text-xs text-muted-foreground">/{cat.slug}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">
-                      {cat.children?.length ?? 0} subcategories
-                    </span>
+                    <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+                      {!isDeleting && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={editingId !== null && !isEditing}
+                          onClick={() => isEditing ? (setEditingId(null), resetUpdate()) : startEdit(cat)}
+                        >
+                          <Pencil className="size-4" />
+                        </Button>
+                      )}
 
-                    {!isDeleting && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        disabled={editingId !== null && !isEditing}
-                        onClick={() => isEditing ? (setEditingId(null), resetUpdate()) : startEdit(cat)}
-                      >
-                        <Pencil className="size-4" />
-                      </Button>
-                    )}
-
-                    {!isEditing && (
-                      <>
-                        {!isDeleting ? (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-600 hover:bg-red-50 hover:text-red-700"
-                            disabled={editingId !== null}
-                            onClick={() => setDeletingId(cat._id)}
-                          >
-                            <Trash2 className="size-4" />
-                          </Button>
-                        ) : (
-                          <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5">
-                            <span className="text-xs text-red-700">Delete?</span>
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              disabled={deleteMutation.isPending}
-                              onClick={() => deleteMutation.mutate(cat._id)}
-                            >
-                              {deleteMutation.isPending ? "..." : "Yes"}
-                            </Button>
+                      {!isEditing && (
+                        <>
+                          {!isDeleting ? (
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => setDeletingId(null)}
+                              className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                              disabled={editingId !== null}
+                              onClick={() => setDeletingId(cat._id)}
                             >
-                              No
+                              <Trash2 className="size-4" />
                             </Button>
-                          </div>
-                        )}
-                      </>
-                    )}
+                          ) : (
+                            <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5">
+                              <span className="text-xs text-red-700">Delete?</span>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                disabled={deleteMutation.isPending}
+                                onClick={() => deleteMutation.mutate(cat._id)}
+                              >
+                                {deleteMutation.isPending ? "..." : "Yes"}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setDeletingId(null)}
+                              >
+                                No
+                              </Button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-2 pl-12 text-xs text-muted-foreground">
+                    {cat.children?.length ?? 0} subcategories
                   </div>
                 </div>
 
                 {isEditing && (
-                  <div className="border-t border-border px-5 py-4">
+                  <div className="border-t border-border px-4 py-4 sm:px-5">
                     <form onSubmit={handleSubmitUpdate(onUpdateSubmit)} className="space-y-4">
                       <div className="grid gap-4 sm:grid-cols-2">
                         <div>
@@ -501,7 +502,7 @@ export default function AdminCategories() {
                 )}
 
                 {!isEditing && cat.children?.length > 0 && (
-                  <div className="border-t border-border px-5 py-3">
+                  <div className="border-t border-border px-4 py-3 sm:px-5">
                     <div className="flex flex-wrap gap-2">
                       {cat.children.map((child) => (
                         <div

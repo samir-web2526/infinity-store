@@ -4,6 +4,7 @@ import { Star, ShoppingCart, Clock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { useAddToCart } from "@/hooks/useAddToCart";
+import { useAuth } from "@/hooks/useAuth";
 import { formatBDT } from "@/utils/currency";
 
 const MONTHS = [
@@ -53,6 +54,7 @@ function StockBar({ stock, maxStock }) {
 
 export default function NewArrivalsProductCard({ product, index }) {
   const { addToCart } = useAddToCart();
+  const { user } = useAuth();
   const hasDiscount = product.discountPercentage > 0;
   const discountedPrice = hasDiscount
     ? (product.price * (1 - product.discountPercentage / 100)).toFixed(2)
@@ -165,21 +167,23 @@ export default function NewArrivalsProductCard({ product, index }) {
             <StockBar stock={product.stock} maxStock={100} />
           </div>
 
-          <div className="p-4 pt-0">
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full rounded-lg"
-              disabled={isOutOfStock}
-              onClick={(e) => {
-                e.preventDefault();
-                addToCart(product._id);
-              }}
-            >
-              <ShoppingCart className="size-4" data-icon="inline-start" />
-              {isOutOfStock ? "Unavailable" : "Add to Cart"}
-            </Button>
-          </div>
+          {user?.role !== "admin" && (
+            <div className="p-4 pt-0">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full rounded-lg"
+                disabled={isOutOfStock}
+                onClick={(e) => {
+                  e.preventDefault();
+                  addToCart(product._id);
+                }}
+              >
+                <ShoppingCart className="size-4" data-icon="inline-start" />
+                {isOutOfStock ? "Unavailable" : "Add to Cart"}
+              </Button>
+            </div>
+          )}
         </div>
       </Link>
     </motion.div>
