@@ -8,6 +8,8 @@ const createOrderSchema = z.object({
         }
     ),
 
+    deliveryArea: z.enum(["inside_dhaka", "outside_dhaka"]),
+
     shippingAddress: z.object({
         fullName: z.string().min(2, "Full name is required"),
         phone: z.string().min(11, "Phone number is required"),

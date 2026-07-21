@@ -3,6 +3,7 @@ const express = require("express");
 const {
     register,
     login,
+    googleLogin,
     logout,
     refreshToken
 } = require("../controllers/auth.controller");
@@ -27,6 +28,8 @@ router.post(
     validate(loginSchema),
     login
 );
+
+router.post("/google-login", googleLogin);
 
 router.post(
     "/logout",

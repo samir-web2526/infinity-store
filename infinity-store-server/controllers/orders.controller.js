@@ -3,7 +3,7 @@ const { getDB } = require("../config/db");
 
 const createOrder = async (req, res) => {
     try {
-        const { paymentMethod, shippingAddress } = req.body;
+        const { paymentMethod, shippingAddress, deliveryArea } = req.body;
 
         const db = getDB();
 
@@ -91,11 +91,22 @@ const createOrder = async (req, res) => {
             0
         );
 
+        const FREE_SHIPPING_THRESHOLD = 100;
+        const SHIPPING_INSIDE_DHAKA = 1;
+        const SHIPPING_OUTSIDE_DHAKA = 2;
+
+        const isFreeShipping = totalPrice >= FREE_SHIPPING_THRESHOLD;
+        const shippingCost = isFreeShipping ? 0 : (deliveryArea === "inside_dhaka" ? SHIPPING_INSIDE_DHAKA : SHIPPING_OUTSIDE_DHAKA);
+        const grandTotal = totalPrice + shippingCost;
+
         const order = {
             userId: new ObjectId(req.user.id),
             items: cart,
             totalItems,
-            totalPrice,
+            subtotal: totalPrice,
+            shippingCost,
+            deliveryArea,
+            totalPrice: grandTotal,
             shippingAddress,
             paymentMethod,
             paymentStatus: "pending",
