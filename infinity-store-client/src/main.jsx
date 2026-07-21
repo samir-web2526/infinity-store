@@ -9,7 +9,7 @@ import AuthProvider from "./context/AuthProvider.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
 import { ThemeProvider } from "./context/ThemeProvider.jsx";
 import "./style.css";
-import router from "./routes/router";
+import router from "./Routes/router";
 
 import {
   QueryClient,
