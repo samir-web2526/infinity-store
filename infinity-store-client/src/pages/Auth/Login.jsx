@@ -17,6 +17,7 @@ import { loginUser, googleLogin } from "@/services/auth.api";
 import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/images/logo.png";
+import { Helmet } from "react-helmet-async";
 
 const ADMIN_EMAIL = "admin@gmail.com";
 const ADMIN_PASSWORD = "123456";
@@ -103,6 +104,7 @@ const fillAdmin = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <Helmet><title>Login | Infinity Store</title></Helmet>
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <img src={logo} alt="Infinity Store" className="mx-auto mb-4 h-14 w-auto dark:invert" />

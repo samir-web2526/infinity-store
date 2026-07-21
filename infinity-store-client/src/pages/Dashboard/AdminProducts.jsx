@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Helmet } from "react-helmet-async";
 
 const productSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -131,6 +132,9 @@ export default function AdminProducts() {
 
   return (
     <div className="space-y-6">
+      <Helmet>
+        <title>Admin Products | Infinity Store</title>
+      </Helmet>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">Products ({products.length})</h1>
         <Button onClick={() => setShowForm(true)}>

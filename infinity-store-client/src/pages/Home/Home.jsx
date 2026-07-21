@@ -7,10 +7,12 @@ import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import CustomerReviews from "@/components/sections/CustomerReviews";
 import FAQ from "@/components/sections/FAQ";
 import Footer from "@/pages/sharedPages/Footer";
+import { Helmet } from "react-helmet-async";
 
 export default function Home() {
   return (
     <div className="h-full overflow-y-auto">
+      <Helmet><title>Home | Infinity Store</title></Helmet>
       <Hero />
       <Categories />
       <FeaturedProducts />

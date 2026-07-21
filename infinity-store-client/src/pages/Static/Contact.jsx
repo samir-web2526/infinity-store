@@ -1,9 +1,14 @@
 import { Phone, Mail, MapPin } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import Footer from "@/pages/sharedPages/Footer";
 
 export default function Contact() {
   return (
     <div className="h-full overflow-y-auto bg-background">
+      <Helmet>
+        <title>Contact Us | Infinity Store</title>
+      </Helmet>
+
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-foreground">Contact Us</h1>
         <p className="mt-2 text-muted-foreground">

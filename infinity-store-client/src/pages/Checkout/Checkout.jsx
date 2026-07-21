@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatBDT } from "@/utils/currency";
+import { Helmet } from "react-helmet-async";
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -128,6 +129,7 @@ export default function Checkout() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
+        <Helmet><title>Checkout | Infinity Store</title></Helmet>
         <div className="mx-auto max-w-5xl">
           <CheckoutSkeleton />
         </div>
@@ -138,6 +140,7 @@ export default function Checkout() {
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
+        <Helmet><title>Checkout | Infinity Store</title></Helmet>
         <div className="mx-auto max-w-5xl text-center py-20">
           <p className="text-sm text-muted-foreground">Your cart is empty. Add some products first.</p>
           <Button className="mt-4 rounded-lg" onClick={() => navigate("/products")}>
@@ -150,6 +153,7 @@ export default function Checkout() {
 
   return (
     <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
+      <Helmet><title>Checkout | Infinity Store</title></Helmet>
       <div className="mx-auto max-w-5xl">
         <div className="mb-6 flex items-center justify-between">
           <motion.h1

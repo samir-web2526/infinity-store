@@ -7,6 +7,7 @@ import { Package, Eye, ChevronDown } from "lucide-react";
 import { getAllOrders, updateOrderStatus } from "@/services/order.api";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Helmet } from "react-helmet-async";
 
 const statusOptions = [
   "pending",
@@ -74,6 +75,9 @@ export default function AdminOrders() {
 
   return (
     <div className="space-y-6">
+      <Helmet>
+        <title>Admin Orders | Infinity Store</title>
+      </Helmet>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Orders ({filteredOrders.length})

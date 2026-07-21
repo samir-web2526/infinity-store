@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProductCard from "@/components/sections/ProductCard";
 import Pagination from "@/components/ui/Pagination";
+import { Helmet } from "react-helmet-async";
 
 function ProductSkeleton() {
   return (
@@ -198,6 +199,7 @@ export default function Products() {
 
   return (
     <div className="flex h-full flex-col bg-background">
+      <Helmet><title>Products | Infinity Store</title></Helmet>
       <div className="shrink-0 px-4 pt-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <motion.div

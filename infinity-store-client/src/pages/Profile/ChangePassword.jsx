@@ -6,6 +6,7 @@ import { z } from "zod";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { ArrowLeft, Lock, Save } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import { changePassword } from "@/services/user.api";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -49,6 +50,9 @@ export default function ChangePassword() {
 
   return (
     <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
+      <Helmet>
+        <title>Change Password | Infinity Store</title>
+      </Helmet>
       <div className="mx-auto max-w-md">
         <Button variant="ghost" size="sm" className="mb-4" onClick={() => navigate(-1)}>
           <ArrowLeft className="size-4" data-icon="inline-start" />

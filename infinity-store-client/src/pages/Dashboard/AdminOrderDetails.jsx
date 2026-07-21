@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { ArrowLeft, Package, MapPin, CreditCard, X, ChevronDown } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import { getOrderById, updateOrderStatus } from "@/services/order.api";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -91,6 +92,10 @@ export default function AdminOrderDetails() {
 
   return (
     <div className="space-y-6">
+      <Helmet>
+        <title>Admin Order Details | Infinity Store</title>
+      </Helmet>
+
       <Button
         variant="ghost"
         size="sm"

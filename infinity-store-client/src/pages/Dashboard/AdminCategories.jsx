@@ -10,6 +10,7 @@ import { getCategories, createCategory, updateCategory, deleteCategory } from "@
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Helmet } from "react-helmet-async";
 
 const createCategorySchema = z.object({
   name: z.string().min(2, "Category name is required"),
@@ -183,6 +184,9 @@ export default function AdminCategories() {
 
   return (
     <div className="space-y-6">
+      <Helmet>
+        <title>Admin Categories | Infinity Store</title>
+      </Helmet>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
           Categories ({categories.length})

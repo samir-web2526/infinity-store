@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { ArrowLeft, Package, Truck, MapPin, CreditCard, X } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import { getOrderById, cancelOrder } from "@/services/order.api";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -57,6 +58,9 @@ export default function OrderDetails() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
+        <Helmet>
+          <title>Order Details | Infinity Store</title>
+        </Helmet>
         <div className="mx-auto max-w-4xl">
           <DetailSkeleton />
         </div>
@@ -67,6 +71,9 @@ export default function OrderDetails() {
   if (!order) {
     return (
       <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
+        <Helmet>
+          <title>Order Details | Infinity Store</title>
+        </Helmet>
         <div className="mx-auto max-w-4xl text-center py-20">
           <p className="text-sm text-muted-foreground">Order not found.</p>
           <Button className="mt-4 rounded-lg" onClick={() => navigate("/orders")}>
@@ -81,6 +88,9 @@ export default function OrderDetails() {
 
   return (
     <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
+      <Helmet>
+        <title>Order Details | Infinity Store</title>
+      </Helmet>
       <div className="mx-auto max-w-4xl">
         <Button
           variant="ghost"

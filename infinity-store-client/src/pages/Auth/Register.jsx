@@ -14,6 +14,7 @@ import Input from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
 import { registerUser } from "@/services/auth.api";
 import logo from "@/assets/images/logo.png";
+import { Helmet } from "react-helmet-async";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -74,6 +75,7 @@ export default function Register() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8">
+      <Helmet><title>Register | Infinity Store</title></Helmet>
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <img src={logo} alt="Infinity Store" className="mx-auto mb-4 h-14 w-auto dark:invert" />

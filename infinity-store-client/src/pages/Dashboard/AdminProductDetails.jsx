@@ -7,6 +7,7 @@ import { z } from "zod";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { ArrowLeft, Save, Trash2 } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import { getProductById, updateProduct, deleteProduct } from "@/services/product.api";
 import { getCategories } from "@/services/category.api";
 import { Button } from "@/components/ui/Button";
@@ -153,6 +154,9 @@ export default function AdminProductDetails() {
   if (isLoading) {
     return (
       <div className="space-y-6">
+        <Helmet>
+          <title>Admin Product Details | Infinity Store</title>
+        </Helmet>
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-96 w-full rounded-xl" />
       </div>
@@ -162,6 +166,9 @@ export default function AdminProductDetails() {
   if (!product) {
     return (
       <div className="py-20 text-center">
+        <Helmet>
+          <title>Admin Product Details | Infinity Store</title>
+        </Helmet>
         <p className="text-sm text-muted-foreground">Product not found.</p>
         <Button className="mt-4 rounded-lg" onClick={() => navigate("/dashboard/products")}>
           Back to Products
@@ -172,6 +179,9 @@ export default function AdminProductDetails() {
 
   return (
     <div className="space-y-6">
+      <Helmet>
+        <title>Admin Product Details | Infinity Store</title>
+      </Helmet>
       <Button
         variant="ghost"
         size="sm"

@@ -14,6 +14,7 @@ import { getProducts } from "@/services/product.api";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Helmet } from "react-helmet-async";
 
 const STATUS_CONFIG = {
   pending: { label: "Pending", color: "bg-yellow-100 text-yellow-800", icon: Clock },
@@ -110,6 +111,9 @@ export default function AdminDashboard() {
   if (isLoading) {
     return (
       <div className="space-y-6">
+        <Helmet>
+          <title>Admin Dashboard | Infinity Store</title>
+        </Helmet>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">Admin Dashboard</h1>
         <DashboardSkeleton />
       </div>
@@ -118,6 +122,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
+      <Helmet>
+        <title>Admin Dashboard | Infinity Store</title>
+      </Helmet>
       <h1 className="text-2xl font-bold tracking-tight text-foreground">Admin Dashboard</h1>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -1,8 +1,13 @@
 import Footer from "@/pages/sharedPages/Footer";
+import { Helmet } from "react-helmet-async";
 
 export default function ReturnPolicy() {
   return (
     <div className="h-full overflow-y-auto bg-background">
+      <Helmet>
+        <title>Return Policy | Infinity Store</title>
+      </Helmet>
+
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-foreground">Return Policy</h1>
         <p className="mt-2 text-muted-foreground">Last updated: July 2026</p>

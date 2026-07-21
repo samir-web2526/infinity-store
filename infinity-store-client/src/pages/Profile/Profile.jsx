@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Badge } from "@/components/ui/badge";
+import { Helmet } from "react-helmet-async";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -56,6 +57,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
+      <Helmet><title>Profile | Infinity Store</title></Helmet>
       <div className="mx-auto max-w-2xl">
         <Button variant="ghost" size="sm" className="mb-4" onClick={() => navigate(-1)}>
           <ArrowLeft className="size-4" data-icon="inline-start" />

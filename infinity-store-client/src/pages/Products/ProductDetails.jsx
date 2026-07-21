@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatBDT } from "@/utils/currency";
+import { Helmet } from "react-helmet-async";
 
 function ModalSkeleton() {
   return (
@@ -63,6 +64,7 @@ export default function ProductDetails() {
 
   return (
     <AnimatePresence>
+      <Helmet><title>Product Details | Infinity Store</title></Helmet>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

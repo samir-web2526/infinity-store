@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Users, Shield, User } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import { getUsers } from "@/services/user.api";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -23,6 +24,10 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-6">
+      <Helmet>
+        <title>Admin Users | Infinity Store</title>
+      </Helmet>
+
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Users ({users.length})
