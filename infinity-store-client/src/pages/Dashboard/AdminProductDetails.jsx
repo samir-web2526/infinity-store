@@ -183,7 +183,6 @@ export default function AdminProductDetails() {
       </Button>
 
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-        {/* Header */}
         <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
           <div className="flex items-center gap-4">
             <img
@@ -232,7 +231,6 @@ export default function AdminProductDetails() {
           </div>
         </div>
 
-        {/* Update Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="rounded-xl border border-border bg-card p-6 shadow-sm"

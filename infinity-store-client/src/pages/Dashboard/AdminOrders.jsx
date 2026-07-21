@@ -80,7 +80,6 @@ export default function AdminOrders() {
         </h1>
       </div>
 
-      {/* Status Filter Chips */}
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setStatusFilter("all")}
@@ -108,7 +107,6 @@ export default function AdminOrders() {
         ))}
       </div>
 
-      {/* Orders Table */}
       {isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (

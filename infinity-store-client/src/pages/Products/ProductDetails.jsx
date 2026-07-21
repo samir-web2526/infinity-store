@@ -76,7 +76,6 @@ export default function ProductDetails() {
           className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-border bg-background shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Close Button */}
           <button
             onClick={close}
             className="absolute right-3 top-3 z-10 flex size-8 items-center justify-center rounded-full bg-background/80 text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-background"
@@ -93,7 +92,6 @@ export default function ProductDetails() {
               </div>
             ) : (
               <div className="flex flex-col gap-6 lg:flex-row">
-                {/* Image */}
                 <div className="relative overflow-hidden rounded-xl bg-muted lg:w-1/2">
                   <img
                     src={product.thumbnail || product.images?.[0] || ""}
@@ -116,7 +114,6 @@ export default function ProductDetails() {
                   )}
                 </div>
 
-                {/* Details */}
                 <div className="flex flex-1 flex-col gap-3">
                   {product.brand && (
                     <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import { useAuth } from "./useAuth";
-import { useCart } from "../context/CartContext";
+import useCart from "./useCart";
 import { addToCart as addToCartApi, getCart } from "../services/cart.api";
 
 export function useAddToCart() {
@@ -22,7 +22,9 @@ export function useAddToCart() {
       try {
         const cart = await getCart();
         refetchCartCount(cart?.items?.length ?? cart?.cart?.items?.length ?? 0);
-      } catch {}
+      } catch {
+        toast.error("Failed to update cart count");
+      }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to add to cart");
     }

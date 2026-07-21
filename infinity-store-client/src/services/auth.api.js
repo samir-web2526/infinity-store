@@ -16,6 +16,13 @@ export const logoutUser = async () => {
   return data;
 };
 
+export const googleLogin = async (token) => {
+  const { data } = await axiosPublic.post("/auth/google-login", {
+    token,
+  });
+  return data;
+};
+
 export const getProfile = async () => {
   const { data } = await axiosSecure.get("/users/profile");
   return data;

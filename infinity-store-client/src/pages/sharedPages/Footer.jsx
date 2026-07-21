@@ -49,7 +49,6 @@ export default function Footer() {
     <footer className="border-t border-border bg-card text-card-foreground">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand */}
           <div className="space-y-5">
             <Link to="/" className="inline-block">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-lg font-bold text-primary-foreground">
@@ -72,7 +71,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
               Quick Links
@@ -92,7 +90,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Useful Links */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
               Useful Links
@@ -111,7 +108,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Stay Connected */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
               Stay Connected
@@ -137,7 +133,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Bar */}
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-5 sm:flex-row sm:px-6 lg:px-8">
           <p className="text-xs text-muted-foreground">

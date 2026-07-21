@@ -102,7 +102,6 @@ export default function AdminOrderDetails() {
       </Button>
 
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-        {/* Header */}
         <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
@@ -135,7 +134,6 @@ export default function AdminOrderDetails() {
           </div>
         </div>
 
-        {/* Status Progress */}
         {order.orderStatus !== "cancelled" && (
           <div className="mb-8 rounded-xl border border-border bg-card p-6 shadow-sm">
             <div className="flex items-center justify-between">
@@ -175,7 +173,6 @@ export default function AdminOrderDetails() {
         )}
 
         <div className="grid gap-6 lg:grid-cols-3">
-          {/* Items */}
           <div className="lg:col-span-2">
             <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-2">
@@ -205,9 +202,7 @@ export default function AdminOrderDetails() {
             </div>
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-6 lg:col-span-1">
-            {/* Total */}
             <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
               <h2 className="mb-3 text-sm font-semibold text-foreground">Order Total</h2>
               <div className="space-y-2 text-sm">
@@ -234,7 +229,6 @@ export default function AdminOrderDetails() {
               </div>
             </div>
 
-            {/* Shipping */}
             <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
               <div className="mb-3 flex items-center gap-2">
                 <MapPin className="size-4 text-muted-foreground" />
@@ -248,7 +242,6 @@ export default function AdminOrderDetails() {
               </div>
             </div>
 
-            {/* Payment */}
             <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
               <div className="mb-3 flex items-center gap-2">
                 <CreditCard className="size-4 text-muted-foreground" />

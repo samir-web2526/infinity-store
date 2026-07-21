@@ -2,8 +2,8 @@ import { Link, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import { Search, ShoppingCart, Sun, Moon } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
-import { useCart } from "../../context/CartContext";
-import { useTheme } from "../../context/ThemeProvider";
+import useCart from "@/hooks/useCart";
+import useTheme from "@/hooks/useTheme";
 import { getCart } from "../../services/cart.api";
 
 const Navbar = () => {
@@ -33,7 +33,6 @@ const Navbar = () => {
         <header className="sticky top-0 z-50 border-b bg-background">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
 
-                {/* Logo */}
                 <Link
                     to="/"
                     className="text-2xl font-bold text-blue-600"
@@ -41,7 +40,6 @@ const Navbar = () => {
                     Infinity Store
                 </Link>
 
-                {/* Navigation */}
                 <nav className="hidden items-center gap-8 md:flex">
                     <Link to="/">Home</Link>
 
@@ -50,10 +48,8 @@ const Navbar = () => {
                     </Link>
                 </nav>
 
-                {/* Right Side */}
                 <div className="flex items-center gap-4">
 
-                    {/* Search */}
                     <div className="hidden relative lg:block">
                         <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                         <input
@@ -70,7 +66,6 @@ const Navbar = () => {
                         />
                     </div>
 
-                    {/* Theme Toggle */}
                     <button
                         onClick={toggleTheme}
                         className="flex size-9 items-center justify-center rounded-md border transition-colors hover:bg-muted"
@@ -79,7 +74,6 @@ const Navbar = () => {
                         {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
                     </button>
 
-                    {/* Cart */}
                     {user && (
   <Link
     to="/cart"
@@ -95,7 +89,6 @@ const Navbar = () => {
   </Link>
 )}
 
-                    {/* Guest */}
                     {!user && (
                         <div className="flex items-center gap-3">
 
@@ -116,7 +109,6 @@ const Navbar = () => {
                         </div>
                     )}
 
-                    {/* Logged In User */}
                     {user && (
                         <div className="dropdown dropdown-end">
 

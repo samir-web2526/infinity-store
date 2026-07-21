@@ -67,8 +67,8 @@ export default function CustomerReviews() {
     [Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true })]
   );
 
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
+  const [canScrollPrev, setCanScrollPrev] = useState(true);
+  const [canScrollNext, setCanScrollNext] = useState(true);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -78,7 +78,6 @@ export default function CustomerReviews() {
 
   useEffect(() => {
     if (!emblaApi) return;
-    onSelect();
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
     return () => {

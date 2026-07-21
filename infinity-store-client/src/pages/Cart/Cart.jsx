@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, AlertTriangle } from "lucide-react";
 import { getCart, updateCartItem, removeCartItem } from "@/services/cart.api";
-import { useCart } from "@/context/CartContext";
+import useCart from "@/hooks/useCart";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatBDT } from "@/utils/currency";
@@ -125,7 +125,6 @@ export default function Cart() {
         )}
 
         <div className="grid gap-8 lg:grid-cols-3">
-          {/* Items */}
           <div className="space-y-4 lg:col-span-2">
             {itemStatuses.map(({ item, ok, message }, i) => (
               <motion.div
@@ -224,7 +223,6 @@ export default function Cart() {
             ))}
           </div>
 
-          {/* Summary */}
           <div className="lg:col-span-1">
             <div className="sticky top-24 rounded-xl border border-border bg-card p-6 shadow-sm">
               <h2 className="mb-4 text-lg font-semibold text-foreground">Order Summary</h2>

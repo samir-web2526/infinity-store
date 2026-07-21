@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { ArrowLeft } from "lucide-react";
 import { getCart } from "@/services/cart.api";
 import { createOrder } from "@/services/order.api";
-import { useCart } from "@/context/CartContext";
+import useCart from "@/hooks/useCart";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -167,7 +167,6 @@ export default function Checkout() {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-8 lg:grid-cols-5">
-            {/* Shipping Form */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -262,7 +261,6 @@ export default function Checkout() {
                 </div>
               </div>
 
-              {/* Payment Method */}
               <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
                 <h2 className="mb-4 text-lg font-semibold text-foreground">
                   Payment Method
@@ -277,7 +275,6 @@ export default function Checkout() {
               </div>
             </motion.div>
 
-            {/* Order Summary */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -287,7 +284,6 @@ export default function Checkout() {
               <div className="sticky top-24 rounded-xl border border-border bg-card p-6 shadow-sm">
                 <h2 className="mb-4 text-lg font-semibold text-foreground">Order Summary</h2>
 
-                {/* Items */}
                 <div className="mb-4 max-h-60 space-y-3 overflow-y-auto">
                   {items.map((item) => (
                     <div key={item.productId} className="flex gap-3">

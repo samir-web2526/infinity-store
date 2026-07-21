@@ -195,7 +195,6 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Product Image Slider */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -252,7 +251,6 @@ export default function Hero() {
                 </div>
               )}
 
-              {/* Nav Arrows */}
               {products.length > 1 && (
                 <>
                   <button
@@ -270,7 +268,6 @@ export default function Hero() {
                 </>
               )}
 
-              {/* Dots */}
               {products.length > 1 && (
                 <div className="absolute bottom-16 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
                   {products.map((_, i) => (
@@ -294,7 +291,6 @@ export default function Hero() {
               <div className="absolute -bottom-6 -left-6 size-40 rounded-full bg-primary/5 blur-3xl" />
             </div>
 
-            {/* Free Shipping Badge */}
             <div className="absolute -bottom-4 -left-4 rounded-2xl border border-border bg-card p-3 shadow-lg sm:-bottom-6 sm:-left-6">
               <div className="flex items-center gap-2">
                 <div className="flex size-8 items-center justify-center rounded-full bg-green-500/10">
@@ -309,7 +305,6 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Top Rated Badge */}
             <div className="absolute -right-2 -top-2 rounded-2xl border border-border bg-card p-3 shadow-lg sm:-right-4 sm:-top-4">
               <div className="flex items-center gap-2">
                 <div className="flex size-8 items-center justify-center rounded-full bg-amber-500/10">

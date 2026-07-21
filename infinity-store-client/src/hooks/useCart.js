@@ -1,16 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import useAxios from "./useAxios";
+import { useContext } from "react";
+import { CartContext } from "@/context/cartContextValue";
 
-const useCart = () => {
-  const axios = useAxios();
-
-  return useQuery({
-    queryKey: ["cart"],
-    queryFn: async () => {
-      const { data } = await axios.get("/cart");
-      return data;
-    },
-  });
-};
-
-export default useCart;
+export default function useCart() {
+  return useContext(CartContext);
+}

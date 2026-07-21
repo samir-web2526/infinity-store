@@ -120,7 +120,6 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold tracking-tight text-foreground">Admin Dashboard</h1>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Revenue"
@@ -155,7 +154,6 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* Order Status Breakdown */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -183,7 +181,6 @@ export default function AdminDashboard() {
         </div>
       </motion.div>
 
-      {/* Recent Orders */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -266,9 +263,7 @@ export default function AdminDashboard() {
         </div>
       </motion.div>
 
-      {/* Quick Stats Row */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Top Products by Stock */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -295,7 +290,6 @@ export default function AdminDashboard() {
           </div>
         </motion.div>
 
-        {/* Recent Users */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}

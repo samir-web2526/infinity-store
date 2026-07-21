@@ -139,7 +139,6 @@ export default function AdminProducts() {
         </Button>
       </div>
 
-      {/* Add Product Modal */}
       <AnimatePresence>
         {showForm && (
           <motion.div
@@ -265,7 +264,6 @@ export default function AdminProducts() {
         )}
       </AnimatePresence>
 
-      {/* Products Table */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}

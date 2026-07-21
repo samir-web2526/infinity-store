@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
 import { getProducts } from "@/services/product.api";
 import { Skeleton } from "@/components/ui/skeleton";
 import NewArrivalsProductCard from "./NewArrivalsProductCard";

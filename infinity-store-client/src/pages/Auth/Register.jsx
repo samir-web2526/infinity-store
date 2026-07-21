@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,9 +22,9 @@ export default function Register() {
   const {
     register,
     handleSubmit,
-    watch,
     setError,
     formState: { errors },
+    control,
   } = useForm({
     defaultValues: {
       name: "",
@@ -34,7 +34,7 @@ export default function Register() {
     },
   });
 
-  const password = watch("password");
+  const password = useWatch({ control, name: "password" });
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -75,7 +75,7 @@ export default function Register() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25">
             <span className="text-xl font-bold text-white">IS</span>
           </div>
           <h1 className="text-2xl font-bold text-foreground">Infinity Store</h1>
@@ -97,7 +97,6 @@ export default function Register() {
                 </div>
               )}
 
-              {/* Name */}
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
                 <Input
@@ -118,7 +117,6 @@ export default function Register() {
                 )}
               </div>
 
-              {/* Email */}
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -139,7 +137,6 @@ export default function Register() {
                 )}
               </div>
 
-              {/* Password */}
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
@@ -160,7 +157,6 @@ export default function Register() {
                 )}
               </div>
 
-              {/* Confirm Password */}
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <Input
@@ -179,10 +175,9 @@ export default function Register() {
                 )}
               </div>
 
-              {/* Submit */}
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700"
+                className="w-full bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700"
                 size="lg"
                 disabled={loading}
               >

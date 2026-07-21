@@ -65,7 +65,6 @@ export default function Profile() {
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="mb-6 text-2xl font-bold tracking-tight text-foreground">Profile</h1>
 
-          {/* Avatar Card */}
           <div className="mb-6 rounded-xl border border-border bg-card p-6 shadow-sm">
             <div className="flex items-center gap-4">
               <div className="flex size-16 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">
@@ -82,7 +81,6 @@ export default function Profile() {
             </div>
           </div>
 
-          {/* Edit Form */}
           <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
             <h3 className="mb-4 text-base font-semibold text-foreground">Edit Profile</h3>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -147,7 +145,6 @@ export default function Profile() {
             </form>
           </div>
 
-          {/* Change Password Link */}
           <Button
             variant="ghost"
             className="mt-4 w-full justify-start"

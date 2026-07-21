@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/card";
 import Input from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginUser } from "@/services/auth.api";
+import { loginUser, googleLogin } from "@/services/auth.api";
+import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function Login() {
@@ -66,11 +67,33 @@ const onSubmit = async (formData) => {
   }
 };
 
+const handleGoogleLogin = async (credentialResponse) => {
+  if (!credentialResponse.credential) return;
+
+  try {
+    setLoading(true);
+
+    await googleLogin(credentialResponse.credential);
+
+    await fetchUser();
+
+    toast.success("Login successful!");
+
+    navigate("/");
+  } catch (err) {
+    toast.error(
+      err.response?.data?.message || "Google Login Failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25">
             <span className="text-xl font-bold text-white">IS</span>
           </div>
           <h1 className="text-2xl font-bold text-foreground">Infinity Store</h1>
@@ -86,7 +109,6 @@ const onSubmit = async (formData) => {
 
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* Email */}
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -107,7 +129,6 @@ const onSubmit = async (formData) => {
                 )}
               </div>
 
-              {/* Password */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">Password</Label>
@@ -132,10 +153,9 @@ const onSubmit = async (formData) => {
                 )}
               </div>
 
-              {/* Submit */}
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700"
+                className="w-full bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700"
                 size="lg"
                 disabled={loading}
               >
@@ -155,6 +175,17 @@ const onSubmit = async (formData) => {
               <span className="text-xs text-muted-foreground">OR</span>
               <div className="h-px flex-1 bg-border" />
             </div>
+
+            <div className="mb-6 flex justify-center">
+  <GoogleLogin
+    onSuccess={handleGoogleLogin}
+    onError={() => toast.error("Google Login Failed")}
+    theme="outline"
+    shape="rectangular"
+    text="signin_with"
+    width="350"
+  />
+</div>
 
             <Link
               to="/"

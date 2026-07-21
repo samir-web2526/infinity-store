@@ -32,7 +32,7 @@ function StockBar({ stock, maxStock }) {
   );
 }
 
-export default function FlashSaleProductCard({ product, index, isFeatured = false, maxStock }) {
+export default function FlashSaleProductCard({ product, index, maxStock }) {
   const { addToCart } = useAddToCart();
   const hasDiscount = product.discountPercentage > 0;
   const discountedPrice = hasDiscount

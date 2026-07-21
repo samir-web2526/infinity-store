@@ -52,7 +52,6 @@ export default function AdminCategories() {
 
   const categories = data ?? [];
 
-  // Create form
   const {
     register: regCreate,
     handleSubmit: handleSubmitCreate,
@@ -70,7 +69,6 @@ export default function AdminCategories() {
     name: "children",
   });
 
-  // Update form
   const {
     register: regUpdate,
     handleSubmit: handleSubmitUpdate,
@@ -78,7 +76,6 @@ export default function AdminCategories() {
     reset: resetUpdate,
     setError: setErrorUpdate,
     control: controlUpdate,
-    setValue: setValueUpdate,
   } = useForm({
     resolver: zodResolver(updateCategorySchema),
   });
@@ -196,7 +193,6 @@ export default function AdminCategories() {
         </Button>
       </div>
 
-      {/* Add Category Modal */}
       <AnimatePresence>
         {showForm && (
           <motion.div
@@ -320,7 +316,6 @@ export default function AdminCategories() {
         )}
       </AnimatePresence>
 
-      {/* Categories List */}
       {isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -346,7 +341,6 @@ export default function AdminCategories() {
                 transition={{ delay: i * 0.03 }}
                 className="rounded-xl border border-border bg-card shadow-sm"
               >
-                {/* Category Header */}
                 <div className="flex items-center justify-between px-5 py-4">
                   <div className="flex items-center gap-3">
                     <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -362,7 +356,6 @@ export default function AdminCategories() {
                       {cat.children?.length ?? 0} subcategories
                     </span>
 
-                    {/* Edit Button */}
                     {!isDeleting && (
                       <Button
                         variant="ghost"
@@ -374,7 +367,6 @@ export default function AdminCategories() {
                       </Button>
                     )}
 
-                    {/* Delete: Inline Confirmation */}
                     {!isEditing && (
                       <>
                         {!isDeleting ? (
@@ -412,7 +404,6 @@ export default function AdminCategories() {
                   </div>
                 </div>
 
-                {/* Inline Edit Form */}
                 {isEditing && (
                   <div className="border-t border-border px-5 py-4">
                     <form onSubmit={handleSubmitUpdate(onUpdateSubmit)} className="space-y-4">
@@ -437,7 +428,6 @@ export default function AdminCategories() {
                         </div>
                       </div>
 
-                      {/* Children Edit */}
                       <div>
                         <div className="mb-3 flex items-center justify-between">
                           <label className="text-sm font-medium text-foreground">Sub Categories</label>
@@ -510,7 +500,6 @@ export default function AdminCategories() {
                   </div>
                 )}
 
-                {/* Children Display (when not editing) */}
                 {!isEditing && cat.children?.length > 0 && (
                   <div className="border-t border-border px-5 py-3">
                     <div className="flex flex-wrap gap-2">

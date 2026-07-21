@@ -151,7 +151,6 @@ export default function MyOrders() {
                 </div>
               </div>
 
-              {/* Items Preview */}
               <div className="mt-4 flex gap-2 overflow-x-auto">
                 {order.items?.slice(0, 4).map((item) => (
                   <img

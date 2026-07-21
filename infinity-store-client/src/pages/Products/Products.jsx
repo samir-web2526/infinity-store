@@ -197,7 +197,6 @@ export default function Products() {
 
   return (
     <div className="flex h-full flex-col bg-background">
-      {/* Header - Fixed */}
       <div className="shrink-0 px-4 pt-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <motion.div
@@ -221,13 +220,10 @@ export default function Products() {
         </div>
       </div>
 
-      {/* Content: Sidebar + Main */}
       <div className="flex min-h-0 flex-1 px-4 pb-8 sm:px-6 lg:px-8">
         <div className="mx-auto flex w-full max-w-7xl gap-8">
-          {/* Sidebar */}
           <aside className="w-full shrink-0 lg:w-56">
             <div className="space-y-6 py-1">
-              {/* Search */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -243,7 +239,6 @@ export default function Products() {
                 />
               </div>
 
-              {/* Categories */}
               <div>
                 <h3 className="mb-3 text-sm font-semibold text-foreground">
                   Categories
@@ -332,9 +327,7 @@ export default function Products() {
             </div>
           </aside>
 
-          {/* Main - scrollable grid */}
           <div className="flex min-h-0 flex-1 flex-col">
-            {/* Toolbar - Fixed */}
             <div className="shrink-0 py-1">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
@@ -371,7 +364,6 @@ export default function Products() {
               </div>
             </div>
 
-            {/* Grid - Scrollable */}
             <div className="min-h-0 flex-1 overflow-y-auto pt-4">
               {isLoading ? (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -401,7 +393,6 @@ export default function Products() {
                 </div>
               )}
 
-              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="mt-8 flex justify-center pb-4">
                   <Pagination

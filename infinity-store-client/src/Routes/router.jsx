@@ -34,7 +34,6 @@ import DeliveryRules from "@/pages/Static/DeliveryRules";
 import Contact from "@/pages/Static/Contact";
 
 const router = createBrowserRouter([
-  // Public Routes
   {
     path: "/",
     element: <MainLayout />,
@@ -76,7 +75,6 @@ const router = createBrowserRouter([
     ],
   },
 
-  // Auth Routes
   {
     element: <AuthLayout />,
     children: [
@@ -91,7 +89,6 @@ const router = createBrowserRouter([
     ],
   },
 
-  // Protected Routes
   {
     element: <PrivateRoute />,
     children: [
@@ -120,7 +117,6 @@ const router = createBrowserRouter([
         element: <ChangePassword />,
       },
 
-      // Admin Routes
       {
         path: "/dashboard",
         element: <DashboardLayout />,
@@ -159,7 +155,6 @@ const router = createBrowserRouter([
     ],
   },
 
-  // 404
   {
     path: "*",
     element: <NotFound />,
