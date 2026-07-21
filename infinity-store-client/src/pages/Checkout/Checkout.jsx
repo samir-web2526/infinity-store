@@ -119,8 +119,8 @@ export default function Checkout() {
         address: data.address,
         city: data.city,
         postalCode: data.postalCode,
-        deliveryArea: data.deliveryArea,
       },
+      deliveryArea: data.deliveryArea,
       paymentMethod: "Cash on Delivery",
     });
   };

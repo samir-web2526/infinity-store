@@ -172,13 +172,17 @@ export default function Cart() {
                     <div className="flex items-center gap-2">
                       <button
                         className="flex size-7 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:bg-muted"
-                        disabled={item.quantity <= 1 || updateMutation.isPending}
-                        onClick={() =>
-                          updateMutation.mutate({
-                            id: item.productId,
-                            quantity: item.quantity - 1,
-                          })
-                        }
+                        disabled={updateMutation.isPending || removeMutation.isPending}
+                        onClick={() => {
+                          if (item.quantity <= 1) {
+                            removeMutation.mutate(item.productId);
+                          } else {
+                            updateMutation.mutate({
+                              id: item.productId,
+                              quantity: item.quantity - 1,
+                            });
+                          }
+                        }}
                       >
                         <Minus className="size-3" />
                       </button>

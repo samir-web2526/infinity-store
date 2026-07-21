@@ -203,12 +203,18 @@ export default function OrderDetails() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between text-muted-foreground">
                     <span>Subtotal</span>
-                    <span>{formatBDT(order.totalPrice)}</span>
+                    <span>{formatBDT(order.subtotal ?? order.totalPrice)}</span>
                   </div>
-                  <div className="flex justify-between text-muted-foreground">
-                    <span>Shipping</span>
-                    <span className="text-emerald-600">Free</span>
-                  </div>
+                  {order.shippingCost != null && (
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>Shipping {order.deliveryArea === "inside_dhaka" ? "(Dhaka)" : order.deliveryArea === "outside_dhaka" ? "(Outside Dhaka)" : ""}</span>
+                      {order.shippingCost > 0 ? (
+                        <span>{formatBDT(order.shippingCost)}</span>
+                      ) : (
+                        <span className="text-emerald-600">Free</span>
+                      )}
+                    </div>
+                  )}
                   <div className="border-t border-border pt-2">
                     <div className="flex justify-between font-bold text-foreground">
                       <span>Total</span>

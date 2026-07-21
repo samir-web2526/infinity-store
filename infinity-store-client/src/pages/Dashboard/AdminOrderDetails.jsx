@@ -6,6 +6,7 @@ import { ArrowLeft, Package, MapPin, CreditCard, X, ChevronDown } from "lucide-r
 import { getOrderById, updateOrderStatus } from "@/services/order.api";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatBDT } from "@/utils/currency";
 
 const statusOptions = [
   "pending",
@@ -212,16 +213,22 @@ export default function AdminOrderDetails() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between text-muted-foreground">
                   <span>Subtotal</span>
-                  <span>৳{(order.totalPrice ?? 0).toLocaleString()}</span>
+                  <span>{formatBDT(order.subtotal ?? order.totalPrice)}</span>
                 </div>
-                <div className="flex justify-between text-muted-foreground">
-                  <span>Shipping</span>
-                  <span className="text-emerald-600">Free</span>
-                </div>
+                {order.shippingCost != null && (
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>Shipping {order.deliveryArea === "inside_dhaka" ? "(Dhaka)" : order.deliveryArea === "outside_dhaka" ? "(Outside Dhaka)" : ""}</span>
+                    {order.shippingCost > 0 ? (
+                      <span>{formatBDT(order.shippingCost)}</span>
+                    ) : (
+                      <span className="text-emerald-600">Free</span>
+                    )}
+                  </div>
+                )}
                 <div className="border-t border-border pt-2">
                   <div className="flex justify-between font-bold text-foreground">
                     <span>Total</span>
-                    <span>৳{(order.totalPrice ?? 0).toLocaleString()}</span>
+                    <span>{formatBDT(order.totalPrice)}</span>
                   </div>
                 </div>
               </div>
