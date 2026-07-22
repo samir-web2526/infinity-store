@@ -55,7 +55,31 @@ export default function FeaturedProducts() {
       return (b.stock ?? 0) - (a.stock ?? 0);
     });
 
-    return scored.slice(0, 8);
+    const top = scored.slice(0, 8);
+    if (top.length === 0) return [];
+
+    const maxRating = Math.max(...top.map((p) => p.rating ?? 0));
+    const maxReviews = Math.max(...top.map((p) => (p.reviews?.length ?? 0)));
+
+    return top.map((product) => {
+      const rating = product.rating ?? 0;
+      const reviewCount = product.reviews?.length ?? 0;
+      const discount = product.discountPercentage ?? 0;
+
+      let badge = null;
+
+      if (discount >= 15) {
+        badge = "best-seller";
+      }
+      else if (rating === maxRating && maxRating > 0) {
+        badge = "top-rated";
+      }
+       else if (reviewCount === maxReviews && maxReviews > 0) {
+        badge = "popular";
+      }
+
+      return { ...product, badge };
+    });
   }, [data]);
 
   return (
@@ -85,7 +109,12 @@ export default function FeaturedProducts() {
         ) : (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {featuredProducts.map((product, i) => (
-              <ProductCard key={product._id} product={product} index={i} />
+              <ProductCard
+                key={product._id}
+                product={product}
+                index={i}
+                badge={product.badge}
+              />
             ))}
           </div>
         )}

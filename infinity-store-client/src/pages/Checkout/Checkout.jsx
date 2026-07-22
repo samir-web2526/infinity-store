@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion } from "framer-motion";
@@ -45,7 +45,7 @@ export default function Checkout() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
     setError,
   } = useForm({
@@ -76,7 +76,7 @@ export default function Checkout() {
   const SHIPPING_INSIDE_DHAKA = 1;
   const SHIPPING_OUTSIDE_DHAKA = 2;
 
-  const watchedDeliveryArea = watch("deliveryArea");
+  const watchedDeliveryArea = useWatch({ name: "deliveryArea", control });
   const isInsideDhaka = watchedDeliveryArea === "inside_dhaka";
   const isFreeShipping = totalPrice >= FREE_SHIPPING_THRESHOLD;
   const shipping = isFreeShipping ? 0 : (isInsideDhaka ? SHIPPING_INSIDE_DHAKA : SHIPPING_OUTSIDE_DHAKA);

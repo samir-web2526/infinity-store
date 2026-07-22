@@ -161,6 +161,7 @@ export default function Hero() {
                 variant="outline"
                 size="lg"
                 className="w-full rounded-full px-8 sm:w-auto"
+                nativeButton={false}
                 render={<Link to="/products" />}
               >
                 Explore Products

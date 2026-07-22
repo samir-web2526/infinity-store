@@ -82,7 +82,7 @@ export default function NewArrivalsProductCard({ product, index }) {
         <div className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
           <div className="relative aspect-square overflow-hidden bg-muted">
             <img
-              src={product.thumbnail || product.images?.[0] || ""}
+              src={product.thumbnail || product.images?.[0] || null}
               alt={product.title}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
               loading="lazy"

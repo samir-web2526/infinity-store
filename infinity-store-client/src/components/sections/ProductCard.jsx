@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router";
 import { motion } from "framer-motion";
-import { Star, ShoppingCart } from "lucide-react";
+import { Star, ShoppingCart, Trophy, Flame } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { useAddToCart } from "@/hooks/useAddToCart";
@@ -35,7 +35,28 @@ function StockBar({ stock, maxStock }) {
   );
 }
 
-export default function ProductCard({ product, index }) {
+const badgeConfig = {
+  "best-seller": {
+    label: "Best Seller",
+    icon: Trophy,
+    className: "bg-amber-500 text-white",
+    ring: "ring-2 ring-amber-400/50",
+  },
+  "top-rated": {
+    label: "Top Rated",
+    icon: Star,
+    className: "bg-violet-500 text-white",
+    ring: "ring-2 ring-violet-400/50",
+  },
+  popular: {
+    label: "Popular",
+    icon: Flame,
+    className: "bg-rose-500 text-white",
+    ring: "ring-2 ring-rose-400/50",
+  },
+};
+
+export default function ProductCard({ product, index, badge }) {
   const navigate = useNavigate();
   const { addToCart } = useAddToCart();
   const { user } = useAuth();
@@ -61,7 +82,7 @@ export default function ProductCard({ product, index }) {
       }}
     >
       <Link to={`/products/${product._id}`} className="group block h-full">
-        <div className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+        <div className={`flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${badgeConfig[badge]?.ring ?? ""}`}>
           <div className="relative aspect-square overflow-hidden bg-muted">
             <img
               src={product.thumbnail || product.images?.[0] || ""}
@@ -74,6 +95,15 @@ export default function ProductCard({ product, index }) {
               <div className="absolute left-3 top-3 z-10">
                 <Badge variant="destructive" className="text-[11px] font-semibold">
                   -{Math.round(product.discountPercentage)}%
+                </Badge>
+              </div>
+            )}
+
+            {badge && badgeConfig[badge] && (
+              <div className={`absolute top-3 z-20 ${hasDiscount ? "left-[52px]" : "left-3"}`}>
+                <Badge className={`gap-1 text-[11px] font-semibold ${badgeConfig[badge].className}`}>
+                  {(() => { const Icon = badgeConfig[badge].icon; return <Icon className="size-3" />; })()}
+                  {badgeConfig[badge].label}
                 </Badge>
               </div>
             )}
