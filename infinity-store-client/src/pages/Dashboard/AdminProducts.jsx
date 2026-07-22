@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-import { Plus, Eye, Pencil, X, Package } from "lucide-react";
+import { Plus, Eye, Pencil, X, Package, Camera, ImagePlus, Upload } from "lucide-react";
 import { Link } from "react-router";
 import { getProducts, createProduct } from "@/services/product.api";
 import { formatBDT } from "@/utils/currency";
@@ -28,8 +28,6 @@ const productSchema = z.object({
   warrantyInformation: z.string().optional().default(""),
   shippingInformation: z.string().optional().default(""),
   returnPolicy: z.string().optional().default(""),
-  thumbnail: z.string().optional().default(""),
-  images: z.string().optional().default(""),
 });
 
 function ProductSkeleton() {
@@ -57,6 +55,14 @@ function getAllCategorySlugs(categories) {
 export default function AdminProducts() {
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
+  const [thumbnailFile, setThumbnailFile] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [thumbnailPreview, setThumbnailPreview] = useState("");
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [thumbnailDrag, setThumbnailDrag] = useState(false);
+  const [imagesDrag, setImagesDrag] = useState(false);
+  const thumbnailInputRef = useRef(null);
+  const imagesInputRef = useRef(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-products"],
@@ -93,8 +99,6 @@ export default function AdminProducts() {
       warrantyInformation: "",
       shippingInformation: "",
       returnPolicy: "",
-      thumbnail: "",
-      images: "",
     },
   });
 
@@ -104,7 +108,7 @@ export default function AdminProducts() {
       toast.success("Product created successfully");
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
       setShowForm(false);
-      reset();
+      resetForm();
     },
     onError: (err) => {
       const data = err?.response?.data;
@@ -120,12 +124,43 @@ export default function AdminProducts() {
     },
   });
 
-  const onSubmit = (formData) => {
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
+
+  const resetForm = () => {
+    setThumbnailFile(null);
+    setImageFiles([]);
+    setThumbnailPreview("");
+    setImagePreviews([]);
+    reset();
+  };
+
+  const onSubmit = async (formData) => {
+    let thumbnail = "";
+    let images = [];
+
+    if (thumbnailFile) {
+      thumbnail = await toBase64(thumbnailFile);
+    }
+
+    if (imageFiles.length > 0) {
+      images = await Promise.all(imageFiles.map((f) => toBase64(f)));
+    }
+
+    if (!thumbnail && images.length > 0) {
+      thumbnail = images[0];
+    }
+
     const payload = {
       ...formData,
       tags: formData.tags ? formData.tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
-      images: formData.images ? formData.images.split(",").map((u) => u.trim()).filter(Boolean) : [],
-      thumbnail: formData.thumbnail || (formData.images ? formData.images.split(",")[0]?.trim() : ""),
+      thumbnail,
+      images,
     };
     createMutation.mutate(payload);
   };
@@ -208,7 +243,7 @@ export default function AdminProducts() {
 
                   <div>
                     <label className="mb-1 block text-sm font-medium text-foreground">Price *</label>
-                    <Input {...register("price")} type="number" step="0.01" placeholder="0.00" className={errors.price ? "border-red-500" : ""} />
+                    <Input {...register("price")} type="number" step="0.01" placeholder="$0.00" className={errors.price ? "border-red-500" : ""} />
                     {errors.price && <p className="mt-1 text-xs text-red-500">{errors.price.message}</p>}
                   </div>
 
@@ -229,13 +264,117 @@ export default function AdminProducts() {
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="mb-1 block text-sm font-medium text-foreground">Thumbnail URL</label>
-                    <Input {...register("thumbnail")} placeholder="https://..." />
+                    <label className="mb-1 block text-sm font-medium text-foreground">Thumbnail</label>
+                    <input
+                      ref={thumbnailInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setThumbnailFile(file);
+                          setThumbnailPreview(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                    <div
+                      onClick={() => thumbnailInputRef.current?.click()}
+                      onDragOver={(e) => { e.preventDefault(); setThumbnailDrag(true); }}
+                      onDragLeave={() => setThumbnailDrag(false)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        setThumbnailDrag(false);
+                        const file = e.dataTransfer.files?.[0];
+                        if (file && file.type.startsWith("image/")) {
+                          setThumbnailFile(file);
+                          setThumbnailPreview(URL.createObjectURL(file));
+                        }
+                      }}
+                      className={`cursor-pointer rounded-xl border-2 border-dashed p-5 transition-all duration-200 hover:border-primary/50 hover:bg-primary/5 ${thumbnailDrag ? "border-primary bg-primary/10 scale-[1.01]" : "border-border"}`}
+                    >
+                      {thumbnailPreview ? (
+                        <div className="flex flex-wrap items-center gap-3">
+                          <div className="relative">
+                            <img src={thumbnailPreview} alt="Thumbnail" className="size-20 rounded-xl object-cover ring-2 ring-border" />
+                            <div className="absolute -right-1.5 -top-1.5 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                              <Camera className="size-3" />
+                            </div>
+                          </div>
+                          <div className="text-sm font-medium text-foreground">Change thumbnail</div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-3 py-4">
+                          <div className={`flex size-16 items-center justify-center rounded-xl transition-colors ${thumbnailDrag ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
+                            <Camera className="size-7" />
+                          </div>
+                          <div className="text-center">
+                            <p className="text-sm font-medium text-foreground">Click to upload thumbnail</p>
+                            <p className="mt-0.5 text-xs text-muted-foreground">Any image format up to 5MB</p>
+                            <p className="mt-1.5 text-xs text-primary">or drag & drop</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="mb-1 block text-sm font-medium text-foreground">Images (comma separated URLs)</label>
-                    <Input {...register("images")} placeholder="https://..., https://..." />
+                    <label className="mb-1 block text-sm font-medium text-foreground">Images</label>
+                    <input
+                      ref={imagesInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files ?? []);
+                        setImageFiles((prev) => [...prev, ...files]);
+                        setImagePreviews((prev) => [...prev, ...files.map((f) => URL.createObjectURL(f))]);
+                        e.target.value = "";
+                      }}
+                    />
+                    <div
+                      onClick={() => imagesInputRef.current?.click()}
+                      onDragOver={(e) => { e.preventDefault(); setImagesDrag(true); }}
+                      onDragLeave={() => setImagesDrag(false)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        setImagesDrag(false);
+                        const files = Array.from(e.dataTransfer.files ?? []).filter((f) => f.type.startsWith("image/"));
+                        if (files.length > 0) {
+                          setImageFiles((prev) => [...prev, ...files]);
+                          setImagePreviews((prev) => [...prev, ...files.map((f) => URL.createObjectURL(f))]);
+                        }
+                      }}
+                      className={`cursor-pointer rounded-xl border-2 border-dashed p-5 transition-all duration-200 hover:border-primary/50 hover:bg-primary/5 ${imagesDrag ? "border-primary bg-primary/10 scale-[1.01]" : "border-border"}`}
+                    >
+                      {imagePreviews.length > 0 ? (
+                        <div className="flex flex-wrap gap-3">
+                          {imagePreviews.map((src, i) => (
+                            <div key={i} className="relative">
+                              <img src={src} alt="" className="size-20 rounded-xl object-cover ring-2 ring-border" />
+                              <div className="absolute -right-1.5 -top-1.5 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                                <span className="text-[10px] font-bold">{i + 1}</span>
+                              </div>
+                            </div>
+                          ))}
+                          <div className="flex size-20 items-center justify-center rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 text-primary transition-colors hover:bg-primary/10">
+                            <Plus className="size-6" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-3 py-4">
+                          <div className={`flex size-16 items-center justify-center rounded-xl transition-colors ${imagesDrag ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
+                            <ImagePlus className="size-7" />
+                          </div>
+                          <div className="text-center">
+                            <p className="text-sm font-medium text-foreground">Click to upload images</p>
+                            <p className="mt-0.5 text-xs text-muted-foreground">Any image format — multiple files supported</p>
+                            <p className="mt-1.5 text-xs text-primary">or drag & drop</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div>
@@ -258,7 +397,7 @@ export default function AdminProducts() {
                   <Button type="submit" disabled={createMutation.isPending} className="rounded-lg">
                     {createMutation.isPending ? "Creating..." : "Create Product"}
                   </Button>
-                  <Button type="button" variant="ghost" onClick={() => { setShowForm(false); reset(); }}>
+                  <Button type="button" variant="ghost" onClick={() => { setShowForm(false); resetForm(); }}>
                     Cancel
                   </Button>
                 </div>

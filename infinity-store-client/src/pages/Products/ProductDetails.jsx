@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,6 +34,7 @@ export default function ProductDetails() {
   const { addToCart } = useAddToCart();
   const { user } = useAuth();
   const [addedToCart, setAddedToCart] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(0);
 
   const handleAddToCart = async (productId) => {
     await addToCart(productId);
@@ -67,6 +68,18 @@ export default function ProductDetails() {
   const discountedPrice = hasDiscount
     ? (product.price * (1 - product.discountPercentage / 100)).toFixed(2)
     : null;
+
+  const allImages = useMemo(() => {
+    if (!product) return [];
+    const imgs = [];
+    if (product.thumbnail) imgs.push(product.thumbnail);
+    if (product.images?.length) {
+      product.images.forEach((img) => {
+        if (img !== product.thumbnail) imgs.push(img);
+      });
+    }
+    return imgs.length > 0 ? imgs : [product.thumbnail];
+  }, [product]);
 
   return (
     <AnimatePresence>
@@ -102,24 +115,48 @@ export default function ProductDetails() {
               </div>
             ) : (
               <div className="flex flex-col gap-6 lg:flex-row">
-                <div className="relative overflow-hidden rounded-xl bg-muted lg:w-1/2">
-                  <img
-                    src={product.thumbnail || product.images?.[0] || ""}
-                    alt={product.title}
-                    className="aspect-square w-full object-cover"
-                  />
-                  {hasDiscount && (
-                    <div className="absolute left-3 top-3">
-                      <Badge variant="destructive" className="text-xs font-semibold">
-                        -{Math.round(product.discountPercentage)}%
-                      </Badge>
-                    </div>
-                  )}
-                  {product.stock === 0 && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
-                      <Badge variant="destructive" className="text-sm font-semibold">
-                        Out of Stock
-                      </Badge>
+                <div className="flex flex-col gap-3 lg:w-1/2">
+                  <div className="relative overflow-hidden rounded-xl bg-muted">
+                    <img
+                      src={allImages[selectedImage]}
+                      alt={product.title}
+                      className="aspect-square w-full object-cover"
+                    />
+                    {hasDiscount && (
+                      <div className="absolute left-3 top-3">
+                        <Badge variant="destructive" className="text-xs font-semibold">
+                          -{Math.round(product.discountPercentage)}%
+                        </Badge>
+                      </div>
+                    )}
+                    {product.stock === 0 && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
+                        <Badge variant="destructive" className="text-sm font-semibold">
+                          Out of Stock
+                        </Badge>
+                      </div>
+                    )}
+                  </div>
+
+                  {allImages.length > 1 && (
+                    <div className="flex gap-2 overflow-x-auto pb-1">
+                      {allImages.map((img, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setSelectedImage(i)}
+                          className={`size-16 shrink-0 overflow-hidden rounded-lg border-2 transition-colors sm:size-20 ${
+                            i === selectedImage
+                              ? "border-primary"
+                              : "border-border hover:border-muted-foreground/50"
+                          }`}
+                        >
+                          <img
+                            src={img}
+                            alt={`${product.title} ${i + 1}`}
+                            className="h-full w-full object-cover"
+                          />
+                        </button>
+                      ))}
                     </div>
                   )}
                 </div>

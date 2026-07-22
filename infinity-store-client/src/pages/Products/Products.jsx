@@ -234,11 +234,11 @@ export default function Products() {
           )}
 
           <aside
-            className={`fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r border-border bg-background p-4 transition-transform duration-200 lg:static lg:translate-x-0 lg:w-56 lg:border-0 lg:p-0 lg:py-1 lg:overflow-y-visible ${
+            className={`fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r border-border bg-background p-4 transition-transform duration-200 lg:static lg:translate-x-0 lg:w-56 lg:border-0 lg:p-0 lg:py-1 lg:overflow-visible ${
               showFilters ? "translate-x-0" : "-translate-x-full"
             }`}
           >
-            <div className="space-y-6 py-1">
+            <div className="space-y-6 py-1 overflow-visible">
               <div className="flex items-center justify-between lg:hidden">
                 <span className="text-sm font-semibold text-foreground">Filters</span>
                 <button
@@ -263,11 +263,11 @@ export default function Products() {
                 />
               </div>
 
-              <div>
+              <div className="overflow-visible">
                 <h3 className="mb-3 text-sm font-semibold text-foreground">
                   Categories
                 </h3>
-                <div className="space-y-0.5">
+                <div className="space-y-0.5 overflow-visible">
                   {categories.map((parent) => {
                     const isActive =
                       selectedCategory === parent.slug ||
@@ -278,7 +278,7 @@ export default function Products() {
                       );
 
                     return (
-                      <div key={parent.slug} className="group/parent">
+                      <div key={parent.slug} className="relative group/parent">
                         <button
                           onClick={() => {
                             handleCategoryChange(selectedCategory === parent.slug ? "" : parent.slug);
@@ -304,7 +304,7 @@ export default function Products() {
                         </button>
 
                         {parent.children?.length > 0 && (
-                          <div className="invisible absolute left-0 top-full z-20 mt-0.5 w-full rounded-xl border border-border bg-card py-1.5 shadow-lg transition-all duration-150 group-hover/parent:visible group-hover/parent:opacity-100 lg:block">
+                          <div className="invisible absolute left-0 top-full z-20 mt-0.5 w-full rounded-xl border border-border bg-card py-1.5 shadow-lg transition-all duration-150 group-hover/parent:visible group-hover/parent:opacity-100">
                             {parent.children.map((child) => {
                               const childActive =
                                 selectedCategory === child.slug ||

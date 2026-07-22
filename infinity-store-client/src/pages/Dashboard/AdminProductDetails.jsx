@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -28,8 +28,6 @@ const updateSchema = z.object({
   shippingInformation: z.string().optional(),
   returnPolicy: z.string().optional(),
   minimumOrderQuantity: z.coerce.number().min(1).optional(),
-  thumbnail: z.string().optional(),
-  images: z.string().optional(),
 });
 
 function getAllCategorySlugs(categories) {
@@ -49,6 +47,14 @@ export default function AdminProductDetails() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [thumbnailFile, setThumbnailFile] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [thumbnailPreview, setThumbnailPreview] = useState("");
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [thumbnailDrag, setThumbnailDrag] = useState(false);
+  const [imagesDrag, setImagesDrag] = useState(false);
+  const thumbnailInputRef = useRef(null);
+  const imagesInputRef = useRef(null);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["admin-product", id],
@@ -87,8 +93,6 @@ export default function AdminProductDetails() {
           shippingInformation: product.shippingInformation ?? "",
           returnPolicy: product.returnPolicy ?? "",
           minimumOrderQuantity: product.minimumOrderQuantity ?? 1,
-          thumbnail: product.thumbnail ?? "",
-          images: product.images?.join(", ") ?? "",
         }
       : undefined,
   });
@@ -126,7 +130,26 @@ export default function AdminProductDetails() {
     },
   });
 
-  const onSubmit = (formData) => {
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
+
+  const onSubmit = async (formData) => {
+    let thumbnail = product.thumbnail ?? "";
+    let images = product.images ?? [];
+
+    if (thumbnailFile) {
+      thumbnail = await toBase64(thumbnailFile);
+    }
+
+    if (imageFiles.length > 0) {
+      images = await Promise.all(imageFiles.map((f) => toBase64(f)));
+    }
+
     const payload = {
       title: formData.title,
       description: formData.description,
@@ -140,13 +163,11 @@ export default function AdminProductDetails() {
       shippingInformation: formData.shippingInformation,
       returnPolicy: formData.returnPolicy,
       minimumOrderQuantity: formData.minimumOrderQuantity || undefined,
-      thumbnail: formData.thumbnail,
+      thumbnail,
       tags: formData.tags
         ? formData.tags.split(",").map((t) => t.trim()).filter(Boolean)
         : [],
-      images: formData.images
-        ? formData.images.split(",").map((u) => u.trim()).filter(Boolean)
-        : [],
+      images,
     };
     updateMutation.mutate(payload);
   };
@@ -328,37 +349,103 @@ export default function AdminProductDetails() {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-foreground">Thumbnail URL</label>
-                <Input {...register("thumbnail")} placeholder="https://..." />
-              </div>
-
-              {product.thumbnail && (
-                <div className="sm:col-span-2">
-                  <img
-                    src={product.thumbnail}
-                    alt="Thumbnail preview"
-                    className="h-20 w-20 rounded-lg object-cover"
-                  />
-                </div>
-              )}
-
-              <div className="sm:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-foreground">Images (comma separated URLs)</label>
-                <Input {...register("images")} placeholder="https://..., https://..." />
-              </div>
-
-              {product.images?.length > 0 && (
-                <div className="flex gap-2 sm:col-span-2">
-                  {product.images.slice(0, 4).map((img, i) => (
-                    <img key={i} src={img} alt="" className="h-16 w-16 rounded-lg object-cover" />
-                  ))}
-                  {product.images.length > 4 && (
-                    <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground">
-                      +{product.images.length - 4}
+                <label className="mb-1 block text-sm font-medium text-foreground">Thumbnail</label>
+                <input
+                  ref={thumbnailInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setThumbnailFile(file);
+                      setThumbnailPreview(URL.createObjectURL(file));
+                    }
+                  }}
+                />
+                <div
+                  onClick={() => thumbnailInputRef.current?.click()}
+                  onDragOver={(e) => { e.preventDefault(); setThumbnailDrag(true); }}
+                  onDragLeave={() => setThumbnailDrag(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setThumbnailDrag(false);
+                    const file = e.dataTransfer.files?.[0];
+                    if (file && file.type.startsWith("image/")) {
+                      setThumbnailFile(file);
+                      setThumbnailPreview(URL.createObjectURL(file));
+                    }
+                  }}
+                  className={`flex cursor-pointer items-center gap-3 rounded-lg border border-dashed p-3 transition-colors hover:border-muted-foreground/50 ${thumbnailDrag ? "border-primary bg-primary/5" : "border-border"}`}
+                >
+                  {(thumbnailPreview || product.thumbnail) ? (
+                    <img src={thumbnailPreview || product.thumbnail} alt="Thumbnail" className="size-16 rounded-lg object-cover" />
+                  ) : (
+                    <div className="flex size-16 items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground">
+                      Upload
                     </div>
                   )}
+                  <div className="text-xs text-muted-foreground">
+                    <p className="font-medium text-foreground">Click to replace thumbnail</p>
+                    <p>PNG, JPG up to 5MB</p>
+                  </div>
                 </div>
-              )}
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="mb-1 block text-sm font-medium text-foreground">Images</label>
+                <input
+                  ref={imagesInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files ?? []);
+                    setImageFiles(files);
+                    setImagePreviews(files.map((f) => URL.createObjectURL(f)));
+                  }}
+                />
+                <div
+                  onClick={() => imagesInputRef.current?.click()}
+                  onDragOver={(e) => { e.preventDefault(); setImagesDrag(true); }}
+                  onDragLeave={() => setImagesDrag(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setImagesDrag(false);
+                    const files = Array.from(e.dataTransfer.files ?? []).filter((f) => f.type.startsWith("image/"));
+                    if (files.length > 0) {
+                      setImageFiles(files);
+                      setImagePreviews(files.map((f) => URL.createObjectURL(f)));
+                    }
+                  }}
+                  className={`cursor-pointer rounded-lg border border-dashed p-3 transition-colors hover:border-muted-foreground/50 ${imagesDrag ? "border-primary bg-primary/5" : "border-border"}`}
+                >
+                  {imagePreviews.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {imagePreviews.map((src, i) => (
+                        <img key={i} src={src} alt="" className="size-16 rounded-lg object-cover" />
+                      ))}
+                    </div>
+                  ) : product.images?.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {product.images.slice(0, 4).map((img, i) => (
+                        <img key={i} src={img} alt="" className="size-16 rounded-lg object-cover" />
+                      ))}
+                      {product.images.length > 4 && (
+                        <div className="flex size-16 items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground">
+                          +{product.images.length - 4}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex size-16 items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground">
+                      Upload
+                    </div>
+                  )}
+                  <p className="mt-2 text-xs text-muted-foreground">Click to replace images (PNG, JPG)</p>
+                </div>
+              </div>
 
               <div>
                 <label className="mb-1 block text-sm font-medium text-foreground">Warranty</label>
