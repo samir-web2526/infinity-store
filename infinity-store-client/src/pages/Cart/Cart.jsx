@@ -49,17 +49,55 @@ export default function Cart() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, quantity }) => updateCartItem(id, { quantity }),
-    onSuccess: (res) => {
+    onMutate: async ({ id, quantity }) => {
+      await queryClient.cancelQueries({ queryKey: ["cart"] });
+      const previousCart = queryClient.getQueryData(["cart"]);
+      queryClient.setQueryData(["cart"], (old) => {
+        if (!old?.items) return old;
+        return {
+          ...old,
+          items: old.items.map((item) =>
+            item.productId === id ? { ...item, quantity } : item
+          ),
+        };
+      });
+      return { previousCart };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousCart) {
+        queryClient.setQueryData(["cart"], context.previousCart);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
-      refetchCartCount(res?.items?.length ?? res?.cart?.items?.length ?? items.length);
+      const current = queryClient.getQueryData(["cart"]);
+      refetchCartCount(current?.items?.length ?? items.length);
     },
   });
 
   const removeMutation = useMutation({
     mutationFn: removeCartItem,
-    onSuccess: (res) => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ["cart"] });
+      const previousCart = queryClient.getQueryData(["cart"]);
+      queryClient.setQueryData(["cart"], (old) => {
+        if (!old?.items) return old;
+        return {
+          ...old,
+          items: old.items.filter((item) => item.productId !== id),
+        };
+      });
+      return { previousCart };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousCart) {
+        queryClient.setQueryData(["cart"], context.previousCart);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
-      refetchCartCount(res?.items?.length ?? res?.cart?.items?.length ?? Math.max(0, items.length - 1));
+      const current = queryClient.getQueryData(["cart"]);
+      refetchCartCount(current?.items?.length ?? Math.max(0, items.length - 1));
     },
   });
 
@@ -175,17 +213,13 @@ export default function Cart() {
                     <div className="flex items-center gap-2">
                       <button
                         className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-border text-foreground transition-colors hover:bg-muted"
-                        disabled={updateMutation.isPending || removeMutation.isPending}
-                        onClick={() => {
-                          if (item.quantity <= 1) {
-                            removeMutation.mutate(item.productId);
-                          } else {
-                            updateMutation.mutate({
-                              id: item.productId,
-                              quantity: item.quantity - 1,
-                            });
-                          }
-                        }}
+                        disabled={item.quantity <= 1 || updateMutation.isPending}
+                        onClick={() =>
+                          updateMutation.mutate({
+                            id: item.productId,
+                            quantity: item.quantity - 1,
+                          })
+                        }
                       >
                         <Minus className="size-3" />
                       </button>
