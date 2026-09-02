@@ -777,7 +777,7 @@ const sendInvoiceEmail = async (order, targetEmail = null) => {
                                 <table width="100%" cellpadding="0" cellspacing="0">
                                     <tr>
                                         <td>
-                                            <h1 style="margin:0;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">Zayan Classic</h1>
+                                            <h1 style="margin:0;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">Infinity Store</h1>
                                             <p style="margin:6px 0 0;font-size:13px;color:rgba(255,255,255,0.6);letter-spacing:1px;text-transform:uppercase;">Order Invoice</p>
                                         </td>
                                         <td align="right" valign="top">
@@ -885,7 +885,7 @@ const sendInvoiceEmail = async (order, targetEmail = null) => {
 
                         <tr>
                             <td style="background:#fafafa;border-top:1px solid #f0f0f0;padding:20px 36px;text-align:center;">
-                                <p style="margin:0 0 4px;font-size:12px;color:#999;">Thank you for shopping with <strong style="color:#666;">Zayan Classic</strong></p>
+                                <p style="margin:0 0 4px;font-size:12px;color:#999;">Thank you for shopping with <strong style="color:#666;">Infinity Store</strong></p>
                                 <p style="margin:0;font-size:11px;color:#ccc;">If you have any questions, contact us at our support.</p>
                             </td>
                         </tr>
@@ -898,7 +898,7 @@ const sendInvoiceEmail = async (order, targetEmail = null) => {
 
     return await sendMail({
         to: email,
-        subject: `Invoice - Order #${orderShortId} | Zayan Classic`,
+        subject: `Invoice - Order #${orderShortId} | Infinity Store`,
         html,
     });
 };

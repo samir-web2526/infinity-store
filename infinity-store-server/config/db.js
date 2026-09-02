@@ -3,7 +3,13 @@ const dns = require('dns');
 const { setupIndexes } = require("../utils/setupIndexes");
 const { warmUpCache } = require("../utils/cache");
 
-dns.setServers(['8.8.8.8', '8.8.4.4']);
+if (!process.env.VERCEL) {
+    try {
+        dns.setServers(['8.8.8.8', '8.8.4.4']);
+    } catch (e) {
+        console.warn("Could not set DNS servers:", e.message);
+    }
+}
 
 const dbUser = encodeURIComponent(process.env.DB_USER || "");
 const dbPass = encodeURIComponent(process.env.DB_PASS || "");
@@ -17,6 +23,7 @@ const client = new MongoClient(uri, {
         strict: true,
         deprecationErrors: true,
     },
+    serverSelectionTimeoutMS: 5000,
 });
 
 let db;
@@ -28,8 +35,8 @@ async function connectDB() {
 
     console.log("MongoDB Connected");
 
-    // Setup Indexes
-    await setupIndexes(db);
+    // Setup Indexes in background (non-blocking)
+    setupIndexes(db).catch(err => console.error("Index setup failed:", err));
 
     // Warm up cache in background on startup
     warmUpCache(db).catch(err => console.error("Startup warmup failed:", err));

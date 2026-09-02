@@ -66,7 +66,7 @@ app.use("/api/settings", settingsRoutes);
 app.use("/api/banners", bannerRoutes);
 
 app.get("/", (req, res) => {
-    res.send("Zayan Classic Server is Running...");
+    res.send("Infinity Store Server is Running...");
 });
 
 if (process.env.VERCEL) {
