@@ -6,6 +6,11 @@ export const getCategories = async () => {
   return data;
 };
 
+export const getCategoriesWithCounts = async () => {
+  const { data } = await axiosPublic.get("/categories/with-counts");
+  return data;
+};
+
 export const createCategory = async (payload) => {
   const { data } = await axiosSecure.post("/categories", payload);
   return data;

@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import {
   Accordion,
@@ -39,9 +41,9 @@ const FAQ_ITEMS = [
   }
 ];
 
-export default function FAQ() {
+export default function FAQ({ children }) {
   return (
-    <section className="bg-background py-16 sm:py-20">
+    <section className="relative bg-[#E5ECE8] dark:bg-[#0B1A16] py-16 sm:py-24 border-y border-slate-300/70 dark:border-emerald-900/40">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -50,7 +52,10 @@ export default function FAQ() {
           transition={{ duration: 0.5 }}
           className="mb-10 text-center sm:mb-12"
         >
-          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-600/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-emerald-300 border border-slate-400/30 mb-2">
+            💡 Got Questions?
+          </span>
+          <h2 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl">
             Frequently Asked Questions
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground sm:text-base">

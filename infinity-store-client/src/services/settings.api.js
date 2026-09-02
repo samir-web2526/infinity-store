@@ -6,11 +6,7 @@ export const getSettings = async () => {
   return data;
 };
 
-export const updateSettings = async ({ siteName, logo }) => {
-  const body = {};
-  if (siteName) body.siteName = siteName;
-  if (logo) body.logo = logo;
-
-  const { data } = await axiosSecure.patch("/settings", body);
+export const updateSettings = async (payload) => {
+  const { data } = await axiosSecure.patch("/settings", payload);
   return data;
 };

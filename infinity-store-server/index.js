@@ -20,10 +20,24 @@ const bannerRoutes = require("./routes/banner.route");
 const app = express();
 const port = process.env.PORT || 5000;
 
+const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, "") : "";
+const allowedOrigins = [
+    clientUrl,
+    "http://localhost:3000",
+    "http://localhost:3001",
+].filter(Boolean);
+
 app.use(
     cors({
-        origin: process.env.CLIENT_URL,
-        credentials: true
+        origin: function (origin, callback) {
+            if (!origin) return callback(null, true);
+            const cleanOrigin = origin.replace(/\/$/, "");
+            if (allowedOrigins.includes(cleanOrigin) || process.env.NODE_ENV !== "production") {
+                return callback(null, true);
+            }
+            return callback(new Error("Not allowed by CORS"));
+        },
+        credentials: true,
     })
 );
 
@@ -52,7 +66,7 @@ app.use("/api/settings", settingsRoutes);
 app.use("/api/banners", bannerRoutes);
 
 app.get("/", (req, res) => {
-    res.send("Infinity Store Server is Running...");
+    res.send("Zayan Classic Server is Running...");
 });
 
 if (process.env.VERCEL) {

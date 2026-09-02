@@ -1,5 +1,5 @@
-import { Outlet } from "react-router";
+"use client";
 
-export default function AuthLayout() {
-  return <Outlet />;
+export default function AuthLayout({ children }) {
+  return children;
 }

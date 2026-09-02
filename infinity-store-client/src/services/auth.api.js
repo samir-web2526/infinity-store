@@ -6,20 +6,8 @@ export const loginUser = async (payload) => {
   return data;
 };
 
-export const registerUser = async (payload) => {
-  const { data } = await axiosPublic.post("/auth/register", payload);
-  return data;
-};
-
 export const logoutUser = async () => {
   const { data } = await axiosSecure.post("/auth/logout");
-  return data;
-};
-
-export const googleLogin = async (token) => {
-  const { data } = await axiosPublic.post("/auth/google-login", {
-    token,
-  });
   return data;
 };
 

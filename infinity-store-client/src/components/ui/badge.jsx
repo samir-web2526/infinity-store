@@ -1,3 +1,5 @@
+"use client";
+
 import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
 import { cva } from "class-variance-authority";
@@ -46,4 +48,4 @@ function Badge({
   });
 }
 
-export { Badge, badgeVariants }
+export { Badge }

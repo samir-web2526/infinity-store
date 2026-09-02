@@ -1,5 +1,7 @@
 const { ObjectId } = require("mongodb");
 const { getDB } = require("../config/db");
+const { withCache, clearCache } = require("../utils/cache");
+const { buildIdQuery } = require("../utils/buildIdQuery");
 
 const createBanner = async (req, res) => {
     try {
@@ -19,6 +21,8 @@ const createBanner = async (req, res) => {
 
         const result = await bannersCollection.insertOne(newBanner);
 
+        clearCache();
+
         res.status(201).send({
             message: "Banner created successfully",
             insertedId: result.insertedId
@@ -31,9 +35,11 @@ const createBanner = async (req, res) => {
 
 const getAllBanners = async (req, res) => {
     try {
-        const db = getDB();
-        const bannersCollection = db.collection("banners");
-        const banners = await bannersCollection.find({}).sort({ createdAt: -1 }).toArray();
+        const banners = await withCache("banners", 15, async () => {
+            const db = getDB();
+            const bannersCollection = db.collection("banners");
+            return await bannersCollection.find({}).sort({ createdAt: -1 }).toArray();
+        });
         res.send(banners);
     } catch (error) {
         console.log(error);
@@ -44,12 +50,9 @@ const getAllBanners = async (req, res) => {
 const getSingleBanner = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!ObjectId.isValid(id)) {
-            return res.status(400).send({ message: "Invalid banner id" });
-        }
         const db = getDB();
         const bannersCollection = db.collection("banners");
-        const banner = await bannersCollection.findOne({ _id: new ObjectId(id) });
+        const banner = await bannersCollection.findOne(buildIdQuery(id));
         if (!banner) {
             return res.status(404).send({ message: "Banner not found" });
         }
@@ -63,18 +66,16 @@ const getSingleBanner = async (req, res) => {
 const updateBanner = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!ObjectId.isValid(id)) {
-            return res.status(400).send({ message: "Invalid banner id" });
-        }
         const db = getDB();
         const bannersCollection = db.collection("banners");
         const result = await bannersCollection.updateOne(
-            { _id: new ObjectId(id) },
+            buildIdQuery(id),
             { $set: { ...req.body, updatedAt: new Date() } }
         );
         if (result.matchedCount === 0) {
             return res.status(404).send({ message: "Banner not found" });
         }
+        clearCache();
         res.send({ message: "Banner updated successfully" });
     } catch (error) {
         console.log(error);
@@ -85,15 +86,13 @@ const updateBanner = async (req, res) => {
 const deleteBanner = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!ObjectId.isValid(id)) {
-            return res.status(400).send({ message: "Invalid banner id" });
-        }
         const db = getDB();
         const bannersCollection = db.collection("banners");
-        const result = await bannersCollection.deleteOne({ _id: new ObjectId(id) });
+        const result = await bannersCollection.deleteOne(buildIdQuery(id));
         if (result.deletedCount === 0) {
             return res.status(404).send({ message: "Banner not found" });
         }
+        clearCache();
         res.send({ message: "Banner deleted successfully" });
     } catch (error) {
         console.log(error);

@@ -1,8 +1,11 @@
+"use client";
+
 import { useState, useCallback } from "react";
 import { CartContext } from "./cartContextValue";
+import { getLocalCartCount } from "@/utils/localCart";
 
 export function CartProvider({ children }) {
-  const [cartCount, setCartCount] = useState(0);
+  const [cartCount, setCartCount] = useState(() => getLocalCartCount());
 
   const refetchCartCount = useCallback((count) => {
     setCartCount(count);

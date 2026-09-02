@@ -1,64 +1,55 @@
-import { useEffect, useState } from "react";
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
 import { AuthContext } from "./authContext";
-import { getProfile, logoutUser } from "../services/auth.api";
+import { getProfile, logoutUser } from "@/services/auth.api";
+
+function useMountEffect(fn) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { fn(); }, []);
+}
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        const data = await getProfile();
-        setUser(data);
-      } catch (err) {
-        if (err?.response?.status !== 401) {
-          console.error("Failed to fetch profile:", err);
-        }
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    })();
+  const fetchUser = useCallback(async () => {
+    try {
+      const data = await getProfile();
+      const userData = data?.user !== undefined ? data.user : (data?._id ? data : null);
+      setUser(userData);
+      setLoading(false);
+      return userData;
+    } catch {
+      setUser(null);
+      setLoading(false);
+      return null;
+    }
   }, []);
 
-  const fetchUser = async () => {
+  const logout = useCallback(async () => {
     try {
-      setLoading(true);
-      const data = await getProfile();
-      setUser(data);
-      return data;
-    } catch (error) {
-      console.error(error);
-      setUser(null);
-      return null;
+      await logoutUser();
+    } catch {
+      // ignore
     } finally {
-      setLoading(false);
+      setUser(null);
     }
+  }, []);
+
+  useMountEffect(() => { fetchUser(); });
+
+  const info = {
+    user,
+    setUser,
+    loading,
+    fetchUser,
+    logout,
   };
 
-  const logout = async () => {
-  try {
-    await logoutUser();
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setUser(null);
-  }
-};
-
-const info = {
-  user,
-  setUser,
-  loading,
-  fetchUser,
-  logout
-};
-
-return (
-  <AuthContext.Provider value={info}>
-    {children}
-  </AuthContext.Provider>
-)
+  return (
+    <AuthContext.Provider value={info}>
+      {children}
+    </AuthContext.Provider>
+  );
 }

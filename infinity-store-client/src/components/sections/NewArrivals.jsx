@@ -1,23 +1,24 @@
-import { useMemo } from "react";
+"use client";
+
+import Link from 'next/link';
+import { useRef } from "react";
+
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { getProducts } from "@/services/product.api";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getNewArrivals } from "@/services/product.api";
 import { Skeleton } from "@/components/ui/skeleton";
 import NewArrivalsProductCard from "./NewArrivalsProductCard";
 
 function NewArrivalsSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="overflow-hidden rounded-xl border border-border bg-card">
-          <Skeleton className="aspect-square w-full rounded-none" />
-          <div className="space-y-3 p-4">
-            <Skeleton className="h-3 w-16" />
+    <div className="flex gap-3 overflow-hidden">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="shrink-0 w-40 sm:w-45">
+          <Skeleton className="aspect-3/4 w-full rounded-lg" />
+          <div className="mt-2 space-y-2">
             <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-3 w-20" />
-            <Skeleton className="h-5 w-24" />
-            <Skeleton className="h-3 w-28" />
-            <Skeleton className="h-8 w-full rounded-lg" />
+            <Skeleton className="h-3 w-1/2" />
           </div>
         </div>
       ))}
@@ -25,58 +26,82 @@ function NewArrivalsSkeleton() {
   );
 }
 
-function getNewArrivalProducts(products) {
-  const sorted = [...products].sort((a, b) => {
-    const dateA = new Date(a.meta?.createdAt ?? 0).getTime();
-    const dateB = new Date(b.meta?.createdAt ?? 0).getTime();
-    if (dateB !== dateA) return dateB - dateA;
-    const ratingDiff = (b.rating ?? 0) - (a.rating ?? 0);
-    if (ratingDiff !== 0) return ratingDiff;
-    return (b.discountPercentage ?? 0) - (a.discountPercentage ?? 0);
+export default function NewArrivals({ initialData }) {
+  const scrollRef = useRef(null);
+
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ["new-arrivals"],
+    queryFn: getNewArrivals,
+    initialData: (initialData?.products?.length > 0) ? initialData : undefined,
   });
 
-  return sorted.slice(0, 8);
-}
+  const products = data?.products ?? [];
+  const showSkeleton = isLoading || (isFetching && products.length === 0);
 
-export default function NewArrivals() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: () => getProducts({ limit: 1000 }),
-  });
-
-  const products = useMemo(() => {
-    const allProducts = data?.products ?? [];
-    return getNewArrivalProducts(allProducts);
-  }, [data]);
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 200;
+      scrollRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   return (
-    <section id="new-arrivals" className="bg-background py-16 sm:py-20">
+    <section id="new-arrivals" className="relative bg-[#E5F4EC] dark:bg-[#0A241B] py-14 sm:py-20 border-y border-emerald-300/40 dark:border-emerald-800/50 shadow-xs">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-10 text-center sm:mb-12"
+          className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4"
         >
-          <div className="mb-2 flex items-center justify-center gap-2">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          <div>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 border border-emerald-500/20 mb-2">
+              ✨ Just Landed
+            </span>
+            <h2 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl">
               New Arrivals
             </h2>
           </div>
-          <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground sm:text-base">
-            Freshly added products waiting for you.
-          </p>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => scroll("left")}
+              className="hidden sm:flex size-8 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:bg-muted"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+            <h2 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+              NEW ARRIVALS
+            </h2>
+            <button
+              onClick={() => scroll("right")}
+              className="hidden sm:flex size-8 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:bg-muted"
+            >
+              <ChevronRight className="size-4" />
+            </button>
+          </div>
+          <Link
+            href="/products"
+            className="rounded-lg border-2 border-primary px-4 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:text-sm cursor-pointer"
+          >
+            SHOP MORE
+          </Link>
         </motion.div>
 
-        {isLoading ? (
+        {showSkeleton ? (
           <NewArrivalsSkeleton />
         ) : products.length === 0 ? (
           <p className="py-12 text-center text-sm text-muted-foreground">
             No products found.
           </p>
         ) : (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div
+            ref={scrollRef}
+            className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 sm:gap-3 [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:h-0"
+          >
             {products.map((product, i) => (
               <NewArrivalsProductCard key={product._id} product={product} index={i} />
             ))}

@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { Star, BadgeCheck } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -32,7 +34,7 @@ function StarRating({ rating }) {
           key={i}
           className={`size-4 ${
             i < Math.round(rating)
-              ? "fill-amber-400 text-amber-400"
+              ? "fill-foreground text-foreground"
               : "fill-muted text-muted"
           }`}
         />
@@ -60,7 +62,7 @@ export default function ReviewCard({ review, index }) {
       <div className="group flex h-full flex-col rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
         <div className="mb-4 flex items-center gap-3">
           <Avatar size="lg">
-            <AvatarFallback className="bg-linear-to-br from-amber-500 to-orange-500 text-sm font-semibold text-white">
+            <AvatarFallback className="bg-foreground text-sm font-semibold text-background">
               {getInitials(review.reviewerName)}
             </AvatarFallback>
           </Avatar>
@@ -75,7 +77,7 @@ export default function ReviewCard({ review, index }) {
           </div>
 
           <Badge variant="secondary" className="gap-1 text-[10px]">
-            <BadgeCheck className="size-3 text-emerald-500" />
+            <BadgeCheck className="size-3 text-foreground" />
             Verified
           </Badge>
         </div>

@@ -1,9 +1,9 @@
-const USD_TO_BDT = 60;
-
-export function convertToBDT(dollarAmount) {
-  return Math.round(dollarAmount * USD_TO_BDT);
+export function convertToBDT(amount) {
+  const numericAmount = Number(amount ?? 0);
+  return Number.isFinite(numericAmount) ? numericAmount : 0;
 }
 
 export function formatBDT(amount) {
-  return `৳${convertToBDT(amount).toLocaleString("en-BD")}`;
+  const numericAmount = convertToBDT(amount);
+  return `৳${Math.round(numericAmount).toLocaleString("en-BD")}`;
 }

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useCallback } from "react";
 
 function getTimeRemaining() {
@@ -18,8 +20,8 @@ function getTimeRemaining() {
 function TimeUnit({ value, label }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-foreground text-background shadow-lg sm:h-14 sm:w-14">
-        <span className="text-lg font-bold tabular-nums sm:text-xl">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg sm:h-14 sm:w-14">
+        <span suppressHydrationWarning className="text-lg font-bold tabular-nums sm:text-xl">
           {String(value).padStart(2, "0")}
         </span>
       </div>
@@ -39,7 +41,7 @@ function Separator() {
   );
 }
 
-export default function CountdownTimer() {
+export default function CountdownTimer({ children }) {
   const [time, setTime] = useState(getTimeRemaining);
 
   const tick = useCallback(() => {

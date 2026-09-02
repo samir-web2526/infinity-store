@@ -2,11 +2,16 @@ const express = require("express");
 
 const {
     createOrder,
+    createGuestOrder,
     getMyOrders,
     getAllOrders,
     getSingleOrder,
+    trackOrder,
     updateOrderStatus,
     cancelOrder,
+    sendInvoice,
+    getDashboardStats,
+    deleteOrder,
 } = require("../controllers/orders.controller");
 
 const validate = require("../middlewares/validate");
@@ -15,6 +20,7 @@ const verifyAdmin = require("../middlewares/verifyAdmin");
 
 const {
     createOrderSchema,
+    createGuestOrderSchema,
     updateOrderStatusSchema
 } = require("../validations/orders.validation");
 
@@ -25,6 +31,22 @@ router.post(
     verifyToken,
     validate(createOrderSchema),
     createOrder
+);
+
+router.post(
+    "/guest",
+    validate(createGuestOrderSchema),
+    createGuestOrder
+);
+
+router.post(
+    "/track",
+    trackOrder
+);
+
+router.post(
+    "/:id/invoice",
+    sendInvoice
 );
 
 router.get(
@@ -38,6 +60,13 @@ router.get(
     verifyToken,
     verifyAdmin,
     getAllOrders
+);
+
+router.get(
+    "/dashboard-stats",
+    verifyToken,
+    verifyAdmin,
+    getDashboardStats
 );
 
 router.get(
@@ -58,6 +87,13 @@ router.patch(
     "/:id/cancel",
     verifyToken,
     cancelOrder
+);
+
+router.delete(
+    "/:id",
+    verifyToken,
+    verifyAdmin,
+    deleteOrder
 );
 
 module.exports = router;

@@ -1,32 +1,38 @@
-import { useNavigate } from "react-router";
-import toast from "react-hot-toast";
-import { useAuth } from "./useAuth";
+"use client";
+
+import { useQueryClient } from "@tanstack/react-query";
+import toast from "@/utils/toast";
 import useCart from "./useCart";
-import { addToCart as addToCartApi, getCart } from "../services/cart.api";
+import { addToLocalCart, getLocalCartCount } from "../utils/localCart";
 
 export function useAddToCart() {
-  const { user } = useAuth();
   const { refetchCartCount } = useCart();
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const addToCart = async (productId, quantity = 1) => {
-    if (!user) {
-      toast.error("Please login to add items to cart");
-      navigate("/login");
-      return;
-    }
-
+  const addToCart = async (product, quantity = 1, size = "", color = "", colorImage = "") => {
     try {
-      await addToCartApi({ productId, quantity });
+      addToLocalCart({
+        productId: product._id,
+        title: product.title,
+        thumbnail: colorImage || product.thumbnail || product.images?.[0] || null,
+        colorImage: colorImage || null,
+        price: product.discountPercentage > 0
+          ? (product.price * (1 - product.discountPercentage / 100)).toFixed(2)
+          : product.price,
+        stock: product.stock ?? 0,
+        category: typeof product.category === "string"
+          ? product.category
+          : product.category?.name || product.category?.slug || "",
+        quantity,
+        size,
+        color,
+      });
       toast.success("Added to cart");
-      try {
-        const cart = await getCart();
-        refetchCartCount(cart?.items?.length ?? cart?.cart?.items?.length ?? 0);
-      } catch {
-        toast.error("Failed to update cart count");
-      }
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to add to cart");
+      refetchCartCount(getLocalCartCount());
+      queryClient.invalidateQueries({ queryKey: ["localCart"] });
+      window.dispatchEvent(new Event("cart-updated"));
+    } catch {
+      toast.error("Failed to add to cart");
     }
   };
 

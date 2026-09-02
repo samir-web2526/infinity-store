@@ -1,13 +1,28 @@
-import { Outlet } from "react-router";
-import Navbar from "@/pages/sharedPages/Navbar";
-export default function MainLayout() {
-  return (
-    <div className="flex h-screen flex-col overflow-hidden bg-background">
-      <Navbar />
+"use client";
 
-      <main className="min-h-0 flex-1 overflow-y-auto">
-        <Outlet />
-      </main>
-    </div>
+import { Suspense } from "react";
+import Navbar from "@/views/sharedPages/Navbar";
+import Footer from "@/views/sharedPages/Footer";
+import FloatingButtons from "@/components/ui/FloatingButtons";
+import StickyCardDrawer from "@/components/shared/StickyCardDrawer";
+
+export default function MainLayout({ children }) {
+  return (
+    <>
+      <div className="flex min-h-screen flex-col bg-background">
+        <Suspense fallback={<div className="h-16 sm:h-20 bg-background" />}>
+          <Navbar />
+        </Suspense>
+
+        <main className="flex-1">
+          {children}
+        </main>
+
+        <Footer />
+      </div>
+
+      <FloatingButtons />
+      <StickyCardDrawer />
+    </>
   );
 }

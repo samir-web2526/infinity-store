@@ -22,6 +22,16 @@ const createProductSchema = z.object({
     returnPolicy: z.string().optional().default("7 days return policy"),
     minimumOrderQuantity: z.coerce.number().min(1).optional().default(1),
 
+    sizes: z.array(z.string()).optional().default([]),
+    sizeMeasurements: z.array(z.object({
+        size: z.string(),
+    }).passthrough()).optional().default([]),
+
+    colors: z.array(z.object({
+        name: z.string(),
+        image: z.string().optional().default("")
+    })).optional().default([]),
+
     images: z.array(z.string()).optional().default([]),
     thumbnail: z.string().optional().default("")
 });
@@ -48,6 +58,16 @@ const updateProductSchema = z.object({
     shippingInformation: z.string().optional(),
     returnPolicy: z.string().optional(),
     minimumOrderQuantity: z.coerce.number().min(1).optional(),
+
+    sizes: z.array(z.string()).optional(),
+    sizeMeasurements: z.array(z.object({
+        size: z.string(),
+    }).passthrough()).optional(),
+
+    colors: z.array(z.object({
+        name: z.string(),
+        image: z.string().optional().default("")
+    })).optional(),
 
     images: z.array(z.string()).optional(),
     thumbnail: z.string().optional()

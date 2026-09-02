@@ -1,8 +1,9 @@
-import { useMemo } from "react";
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Zap } from "lucide-react";
-import { getProducts } from "@/services/product.api";
+import { getFlashSaleProducts } from "@/services/product.api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import CountdownTimer from "./CountdownTimer";
@@ -28,34 +29,32 @@ function FlashSaleSkeleton() {
   );
 }
 
-function getFlashSaleProducts(products) {
-  const sorted = [...products].sort((a, b) => {
-    const discDiff = (b.discountPercentage ?? 0) - (a.discountPercentage ?? 0);
-    if (discDiff !== 0) return discDiff;
-    const ratingDiff = (b.rating ?? 0) - (a.rating ?? 0);
-    if (ratingDiff !== 0) return ratingDiff;
-    return (b.stock ?? 0) - (a.stock ?? 0);
+import { Helmet } from "react-helmet-async";
+import useSettings from "@/hooks/useSettings";
+import usePageTitle from "@/hooks/usePageTitle";
+
+export default function FlashSale({ initialData }) {
+  const { siteName } = useSettings();
+  usePageTitle("Flash Sale");
+
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ["flash-sale"],
+    queryFn: getFlashSaleProducts,
+    initialData: (initialData?.products?.length > 0) ? initialData : undefined,
   });
 
-  return sorted.slice(0, 8);
-}
-
-export default function FlashSale() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: () => getProducts({ limit: 1000 }),
-  });
-
-  const { products, maxStock } = useMemo(() => {
-    const allProducts = data?.products ?? [];
-    const flashProducts = getFlashSaleProducts(allProducts);
-    const max = allProducts.reduce((m, p) => Math.max(m, p.stock ?? 0), 1);
-    return { products: flashProducts, maxStock: max };
-  }, [data]);
+  const products = data?.products ?? [];
+  const maxStock = data?.maxStock ?? 1;
+  const showSkeleton = isLoading || (isFetching && products.length === 0);
 
   return (
-    <section id="flash-sale" className="relative overflow-hidden bg-linear-to-b from-red-50/80 via-background to-background py-16 sm:py-20 dark:from-red-950/20">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,oklch(0.6_0.2_25/8%),transparent)]" />
+    <section id="flash-sale" className="relative overflow-hidden bg-gradient-to-r from-[#002B1D] via-[#004A32] to-[#002418] text-white py-16 sm:py-24 shadow-2xl border-y border-emerald-500/30">
+      <Helmet>
+        <title>{siteName ? `Flash Sale | ${siteName}` : "Flash Sale - Online Shopping Mall"}</title>
+      </Helmet>
+      {/* Decorative ambient lighting */}
+      <div className="absolute -top-24 -left-24 size-96 rounded-full bg-emerald-400/15 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -right-24 size-96 rounded-full bg-teal-400/15 blur-3xl pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -67,15 +66,15 @@ export default function FlashSale() {
         >
           <div>
             <div className="mb-2 flex items-center gap-2">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                🔥 Flash Sale
+              <h2 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+                ⚡ Flash Sale
               </h2>
-              <Badge variant="destructive" className="animate-pulse text-[11px]">
-                <Zap className="size-3" data-icon="inline-start" />
+              <Badge className="animate-pulse bg-amber-400 text-slate-950 font-bold text-xs border-0 shadow-md">
+                <Zap className="size-3.5 fill-current" data-icon="inline-start" />
                 Limited Time Offer
               </Badge>
             </div>
-            <p className="max-w-md text-sm text-muted-foreground sm:text-base">
+            <p className="max-w-md text-sm text-emerald-100/80 sm:text-base">
               Grab the biggest discounts before the offer ends.
             </p>
           </div>
@@ -83,7 +82,7 @@ export default function FlashSale() {
           <CountdownTimer />
         </motion.div>
 
-        {isLoading ? (
+        {showSkeleton ? (
           <FlashSaleSkeleton />
         ) : products.length === 0 ? (
           <p className="py-12 text-center text-sm text-muted-foreground">
